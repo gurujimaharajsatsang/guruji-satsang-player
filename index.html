@@ -1,0 +1,2207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guruji Ka Satsang Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ===== ROSE THEME (default) =====
+       Dark base with rose accents and white highlights. */
+    --bg:#1a1410; --bg-soft:#221a14; --panel:#2a2018; --panel-2:#322619;
+    --panel-3:#3a2c1c; --line:#43342440; --line-2:#5a4631;
+    --ink:#f4ead9; --ink-soft:#c3b29a; --ink-mute:#8a7860;
+    --gold:#d98a99; --gold-soft:#e7b3bf;
+    --saffron:#d98a99;
+    --rose:#d98a99; --rose-soft:#e7b3bf; --rose-deep:#b56b7c;
+    --hi:#fff6f2;
+    --green:#7faa6e; --over:#d98a99;
+    --radius:14px; --shadow:0 18px 50px -12px rgba(0,0,0,0.6);
+    /* banner gradient + hero gradient as theme-swappable variables */
+    --banner-grad:radial-gradient(circle at 50% 40%,
+      #e7b3bf 0%, #d98a99 40%, #b56b7c 72%, #6e4049 100%);
+    --hero-grad:linear-gradient(160deg,#3a2f30,#22222a);
+    --hero-glow:rgba(217,138,153,0.32);
+    /* Layout shell. These two are measured precisely by JavaScript on
+       load and resize; the values here are just safe starting defaults. */
+    --player-h:96px;
+    --banner-h:266px;
+  }
+  /* ===== ORANGE THEME =====  applied when <body> has .theme-orange */
+  body.theme-orange {
+    --bg:#1a1410; --bg-soft:#221a14; --panel:#2a2018; --panel-2:#322619;
+    --panel-3:#3a2c1c; --line:#43342440; --line-2:#5a4631;
+    --ink:#f4ead9; --ink-soft:#c3b29a; --ink-mute:#8a7860;
+    --gold:#d9a441; --gold-soft:#e8c073;
+    --saffron:#e07b39;
+    --rose:#e07b39; --rose-soft:#e8c073; --rose-deep:#b8862f;
+    --hi:#fff3e0;
+    --green:#7faa6e; --over:#cf6b4a;
+    --banner-grad:radial-gradient(circle at 50% 40%,
+      #f0a93a 0%, #e3902b 38%, #c9761d 72%, #9a5713 100%);
+    --hero-grad:linear-gradient(160deg,#3a2f24,#22201a);
+    --hero-glow:rgba(224,123,57,0.34);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { height:100%; }
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -8%, #2a2a33 0%, transparent 60%),
+      radial-gradient(700px 600px at -5% 100%, #232329 0%, transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Karla',system-ui,sans-serif; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* The page scrolls normally until the banner is gone. After that the
+     .layout sticks to the top and the two columns scroll on their own.
+     The bottom padding (= footer player height) gives the page just
+     enough extra scroll room for the WHOLE banner to leave the screen
+     before the sticky layout locks into place. */
+  .app {
+    max-width:1320px; margin:0 auto;
+    padding:24px 22px var(--player-h);
+  }
+
+  /* ---- Top banner with Guruji's image ---- */
+  .banner {
+    position:relative; margin-bottom:18px; border-radius:var(--radius);
+    overflow:hidden; min-height:230px; flex-shrink:0;
+    border:1px solid var(--line-2);
+    background:var(--banner-grad);
+    box-shadow:var(--shadow);
+  }
+  /* soft glow behind the portrait */
+  .banner-glow {
+    position:absolute; top:50%; left:50%;
+    width:560px; height:560px; transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(255,250,248,0.92) 0%,
+      rgba(255,240,242,0.35) 38%, transparent 68%);
+    pointer-events:none;
+  }
+  /* decorative mandala-tone fades at the two ends */
+  .banner-deco {
+    position:absolute; top:0; bottom:0; width:38%; pointer-events:none;
+    opacity:0.5;
+    background-repeat:repeat;
+    background-image:
+      radial-gradient(circle at 20% 25%, rgba(110,64,73,0.5) 0 9px, transparent 11px),
+      radial-gradient(circle at 62% 70%, rgba(110,64,73,0.4) 0 6px, transparent 9px),
+      radial-gradient(circle at 85% 30%, rgba(90,52,60,0.4) 0 12px, transparent 15px),
+      radial-gradient(circle at 40% 88%, rgba(110,64,73,0.35) 0 7px, transparent 10px);
+    background-size:130px 130px;
+  }
+  .banner-deco-left  { left:0;  mask-image:linear-gradient(90deg,#000,transparent); }
+  .banner-deco-right { right:0; mask-image:linear-gradient(270deg,#000,transparent); }
+
+  .banner-inner {
+    position:relative; z-index:2; display:flex; align-items:center;
+    justify-content:center; gap:30px; padding:22px 28px; flex-wrap:wrap;
+  }
+  /* Guruji's image — placed untouched, never cropped or stretched.
+     Only the outer edges are softly feathered so the image's own
+     orange background melts into the banner. Guruji (the centre)
+     is fully untouched. */
+  .banner-portrait {
+    width:230px; height:230px; flex-shrink:0; position:relative;
+  }
+  .banner-portrait img {
+    width:100%; height:100%; object-fit:contain; display:block;
+    -webkit-mask-image:radial-gradient(circle at 50% 50%,
+      #000 60%, transparent 88%);
+    mask-image:radial-gradient(circle at 50% 50%,
+      #000 60%, transparent 88%);
+  }
+  .banner-portrait-fallback {
+    display:none; position:absolute; inset:0;
+    align-items:center; justify-content:center;
+    font-size:90px; color:#fff; opacity:0.85;
+  }
+  .banner-portrait.no-img img { display:none; }
+  .banner-portrait.no-img .banner-portrait-fallback { display:flex; }
+
+  .banner-title { text-align:left; }
+  .banner-mark {
+    font-size:13px; letter-spacing:0.34em; text-transform:uppercase;
+    color:#5c2f3a; font-weight:800; margin-bottom:4px;
+  }
+  .banner-title h1 {
+    font-family:'Fraunces',serif; font-weight:700;
+    font-size:clamp(34px,5vw,52px); line-height:1.05; color:#3a1f28;
+    text-shadow:0 1px 10px rgba(255,255,255,0.45);
+  }
+  .banner-sub {
+    margin-top:7px; font-size:13.5px; color:#6e3f4b; font-weight:700;
+  }
+  /* on the orange theme the banner is darker -> light text reads better */
+  body.theme-orange .banner-mark { color:#5a3410; }
+  body.theme-orange .banner-title h1 {
+    color:#3a2008; text-shadow:0 2px 14px rgba(255,245,220,0.5);
+  }
+  body.theme-orange .banner-sub { color:#6b3f12; }
+  .offline-dot {
+    position:absolute; top:12px; right:14px; z-index:3;
+    font-size:11px; color:#f6e3e6; font-weight:600;
+    display:flex; align-items:center; gap:6px;
+  }
+  .offline-dot .d {
+    width:8px; height:8px; border-radius:50%; background:#f6e3e6;
+  }
+  .offline-dot.ready .d { background:#1f7a1f; box-shadow:0 0 8px #2e9e2e; }
+  .theme-toggle {
+    position:absolute; top:34px; right:14px; z-index:3;
+    background:rgba(0,0,0,0.28); border:1px solid rgba(255,255,255,0.35);
+    color:#fff; font-family:'Karla',sans-serif; font-size:11px;
+    font-weight:700; padding:5px 11px; border-radius:99px;
+    cursor:pointer; transition:all 0.15s ease; backdrop-filter:blur(4px);
+  }
+  .theme-toggle:hover { background:rgba(0,0,0,0.45); }
+
+  @media (max-width:560px){
+    .banner-inner { gap:16px; padding:18px; }
+    .banner-portrait { width:140px; height:140px; }
+    .banner-title { text-align:center; }
+  }
+
+  /* ---- Layout: 2:1 two columns. Playlist fills the left;
+         right column stacks slideshow over library. ----
+     The layout is sticky: it scrolls up with the page while the banner
+     is on screen, then sticks to top:0 once the banner is gone. From
+     that point the page can't scroll further and the columns take over. */
+  .layout {
+    display:grid;
+    grid-template-columns:1.7fr 1fr;
+    gap:18px;
+    position:sticky; top:0;
+    /* One screenful tall, minus the fixed footer player, so the
+       columns' bottoms sit just above the player — never behind it. */
+    height:calc(100vh - var(--player-h));
+    min-height:0;
+  }
+  .zone-playlist {
+    min-width:0; min-height:0; height:100%;
+    display:flex; flex-direction:column;
+  }
+  .zone-right {
+    min-width:0; min-height:0; height:100%;
+    display:flex; flex-direction:column; gap:18px;
+    overflow-y:auto;            /* right column scrolls inside itself */
+    padding-right:4px;          /* room for the scrollbar */
+    /* Lets the last library row scroll clear above the footer player. */
+    padding-bottom:24px;
+  }
+  .zone-right::-webkit-scrollbar { width:9px; }
+  .zone-right::-webkit-scrollbar-thumb { background:var(--line-2); border-radius:9px; }
+
+  /* Swaroop slideshow panel — top of the right column */
+  .swaroop-panel {
+    background:linear-gradient(180deg,var(--panel),var(--bg-soft));
+    border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden;
+    display:flex; flex-direction:column; flex-shrink:0;
+  }
+  .swaroop-stage {
+    position:relative; width:100%; height:420px; overflow:hidden;
+    background:#0e0e12;
+  }
+  /* Each slide: a blurred fill behind, the whole photo (uncropped) in front */
+  .slide {
+    position:absolute; inset:0; opacity:0; transition:opacity 1.4s ease;
+  }
+  .slide.active { opacity:1; }
+  .slide .blur {
+    position:absolute; inset:0; background-size:cover; background-position:center;
+    filter:blur(26px) brightness(0.5); transform:scale(1.15);
+  }
+  .slide .photo {
+    position:absolute; inset:0; background-size:contain;
+    background-position:center; background-repeat:no-repeat;
+  }
+  .slide-fallback {
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:10px; color:var(--ink-mute);
+  }
+  .slide-fallback .om { font-size:46px; color:var(--gold); opacity:0.5; }
+  .swaroop-caption {
+    padding:13px 16px; border-top:1px solid var(--line);
+    background:rgba(0,0,0,0.25);
+  }
+  .swaroop-caption .big {
+    font-family:'Fraunces',serif; font-size:18px; font-weight:600;
+  }
+  .swaroop-caption .small { font-size:12px; color:var(--ink-soft); }
+
+  /* On narrow screens: stack the columns and let everything scroll
+     normally as one page. No sticky handoff on mobile. */
+  @media (max-width:1000px){
+    .app {
+      padding:24px 16px calc(var(--player-h) + 24px);
+    }
+    .layout {
+      grid-template-columns:1fr;
+      position:static; height:auto;
+      min-height:0; padding-bottom:0;
+    }
+    .zone-playlist, .zone-right {
+      height:auto; min-height:0; overflow:visible;
+    }
+    .zone-right { padding-right:0; }
+    .playlist-card { height:auto; min-height:0; }
+    .swaroop-stage { height:320px; }
+    /* On mobile the playlist body scrolls with the page, not on its own. */
+    .pl-scroll { overflow:visible !important; flex:none; min-height:0; }
+  }
+
+  .card {
+    background:linear-gradient(180deg,var(--panel),var(--bg-soft));
+    border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; box-shadow:var(--shadow);
+  }
+  .card + .card { margin-top:18px; }
+
+  /* ---- Spotify-style playlist card ---- */
+  .playlist-card {
+    padding:0; overflow:hidden;
+    display:flex; flex-direction:column; height:100%; min-height:0;
+  }
+  /* Pinned section: hero + controls, always visible */
+  .pl-pinned { flex-shrink:0; }
+  /* Scrolling section: duration, time panel, track list, aartis */
+  .pl-scroll {
+    flex:1; min-height:0; overflow-y:auto; padding:0 22px 28px;
+  }
+  .pl-scroll::-webkit-scrollbar { width:9px; }
+  .pl-scroll::-webkit-scrollbar-thumb { background:var(--line-2); border-radius:9px; }
+  .pl-scroll > .section-label { margin-top:18px; }
+
+  /* Gradient hero header */
+  .pl-hero {
+    position:relative; overflow:hidden;
+    display:flex; align-items:flex-end; gap:22px; padding:30px 24px 24px;
+    background:var(--hero-grad);
+  }
+  /* a soft glow rising behind Guruji's image tile */
+  .pl-hero::before {
+    content:""; position:absolute; left:-40px; top:-30px;
+    width:340px; height:340px; pointer-events:none;
+    background:radial-gradient(circle,
+      var(--hero-glow) 0%,
+      transparent 70%);
+  }
+  .pl-hero-art {
+    width:150px; height:150px; flex-shrink:0; border-radius:10px;
+    overflow:hidden; position:relative; z-index:1;
+    box-shadow:0 16px 38px rgba(0,0,0,0.6),
+               0 0 0 1px rgba(246,196,172,0.25);
+    background:linear-gradient(135deg,var(--peach),var(--peach-deep));
+  }
+  .pl-hero-art img { width:100%; height:100%; object-fit:cover; display:block; }
+  .pl-hero-art-fallback {
+    display:none; position:absolute; inset:0;
+    align-items:center; justify-content:center; font-size:64px; color:#3a241a;
+  }
+  .pl-hero-art.no-img img { display:none; }
+  .pl-hero-art.no-img .pl-hero-art-fallback { display:flex; }
+  .pl-hero-text { min-width:0; padding-bottom:4px; position:relative; z-index:1; }
+  .pl-hero-kicker {
+    font-size:12px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.16em; color:var(--peach);
+  }
+  .pl-hero-title {
+    font-family:'Fraunces',serif; font-weight:600;
+    font-size:clamp(34px,4.6vw,58px); line-height:1.04;
+    letter-spacing:-0.015em; color:var(--hi); margin:5px 0 9px;
+  }
+  .pl-hero-meta {
+    font-size:13px; color:var(--ink-soft); font-weight:600;
+    font-variant-numeric:tabular-nums;
+  }
+  .pl-hero-dot { margin:0 6px; color:var(--ink-mute); }
+
+  /* Control row under the hero */
+  .pl-controls {
+    display:flex; align-items:center; gap:12px;
+    padding:16px 22px; flex-wrap:wrap;
+    border-bottom:1px solid var(--line);
+  }
+  .pl-play-big {
+    width:54px; height:54px; border-radius:50%; flex-shrink:0; border:none;
+    background:linear-gradient(180deg,var(--gold),var(--rose-deep)); color:#2a1c08;
+    cursor:pointer; transition:all 0.15s ease;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px rgba(217,164,65,0.4);
+    padding:0; line-height:0;
+  }
+  .pl-play-big .pl-icon {
+    display:flex; align-items:center; justify-content:center;
+    width:28px; height:28px; line-height:0;
+  }
+  .pl-play-big .pl-icon svg { display:block; }
+  .pl-play-big:hover { transform:scale(1.07); filter:brightness(1.08); }
+  .pl-play-big:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+  /* Round icon-only button (Restart) */
+  .pl-icon-btn {
+    width:40px; height:40px; border-radius:50%; flex-shrink:0;
+    background:var(--panel-2); border:1px solid var(--line-2);
+    color:var(--ink-soft); cursor:pointer; font-size:18px;
+    display:flex; align-items:center; justify-content:center;
+    transition:all 0.15s ease; padding:0; line-height:0;
+  }
+  .pl-icon-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .pl-icon-btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .pl-ctrl-ghost {
+    background:none; border:1px solid var(--line-2); color:var(--ink-soft);
+    border-radius:99px; padding:9px 15px; font-family:'Karla',sans-serif;
+    font-size:13px; font-weight:700; cursor:pointer; transition:all 0.15s ease;
+  }
+  .pl-ctrl-ghost:hover { border-color:var(--gold); color:var(--ink); }
+  .pl-ctrl-ghost:disabled { opacity:0.4; cursor:not-allowed; }
+  .aarti-card { margin-top:18px; }
+  .card-head { display:flex; align-items:center; gap:9px; margin-bottom:15px; }
+  .card-head .dot {
+    width:7px; height:7px; border-radius:50%; background:var(--gold);
+    box-shadow:0 0 10px var(--gold); flex-shrink:0;
+  }
+  .card-head h2 { font-family:'Fraunces',serif; font-size:18px; font-weight:600; }
+  .card-head .count { font-size:12.5px; color:var(--ink-mute); }
+
+  .head-btns { margin-left:auto; display:flex; gap:7px; }
+  .head-btn {
+    display:flex; align-items:center; gap:6px; border:none; cursor:pointer;
+    border-radius:99px; padding:7px 13px; font-family:'Karla',sans-serif;
+    font-size:12.5px; font-weight:700; transition:all 0.15s ease;
+  }
+  .head-btn.primary {
+    background:linear-gradient(180deg,var(--gold),var(--rose-deep)); color:#2a1c08;
+  }
+  .head-btn.primary:hover { filter:brightness(1.08); transform:scale(1.04); }
+  .head-btn.ghost {
+    background:var(--panel-3); color:var(--ink-soft); border:1px solid var(--line-2);
+  }
+  .head-btn.ghost:hover { border-color:var(--gold); color:var(--ink); }
+  .head-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; filter:none; }
+
+  .section-label {
+    font-size:11px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.12em; color:var(--ink-mute); margin-bottom:9px;
+  }
+  /* Compact duration block in the scrolling area */
+  .dur-block {
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding:14px 0 4px;
+  }
+  .dur-label {
+    font-size:11px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.12em; color:var(--ink-mute); flex-shrink:0;
+  }
+  .durations { display:flex; gap:7px; flex-wrap:wrap; flex:1; }
+  .dur-btn {
+    flex:1; min-width:74px; background:var(--panel-2); color:var(--ink-soft);
+    border:1px solid var(--line-2); border-radius:99px; padding:7px 10px;
+    cursor:pointer; font-family:'Karla',sans-serif; font-size:13px;
+    font-weight:600; transition:all 0.16s ease;
+  }
+  .dur-btn:hover { border-color:var(--gold); color:var(--ink); }
+  .dur-btn.active {
+    background:linear-gradient(180deg,var(--gold),var(--rose-deep));
+    color:#2a1c08; border-color:var(--gold-soft);
+  }
+  .custom-row { display:flex; gap:8px; align-items:center; width:100%; }
+  .custom-row label { font-size:12.5px; color:var(--ink-mute); }
+  input[type="number"],input[type="text"] {
+    background:var(--bg); border:1px solid var(--line-2); color:var(--ink);
+    border-radius:9px; padding:9px 11px; font-family:'Karla',sans-serif;
+    font-size:14px;
+  }
+  input[type="number"]{ width:84px; }
+  input:focus { outline:none; border-color:var(--gold); }
+
+  /* Compact pinned budget strip — replaces the old large budget box. */
+  .budget-strip {
+    padding:0 22px 14px;
+  }
+  .bs-figs {
+    display:flex; align-items:baseline; gap:6px; margin-bottom:7px;
+    font-variant-numeric:tabular-nums;
+  }
+  .bs-used {
+    font-family:'Fraunces',serif; font-size:19px; font-weight:600;
+    color:var(--ink);
+  }
+  .bs-used.over { color:var(--over); }
+  .bs-sep { color:var(--ink-mute); font-size:14px; }
+  .bs-target { font-size:14px; color:var(--ink-soft); font-weight:600; }
+  .bs-remain {
+    margin-left:auto; font-size:12px; font-weight:700;
+  }
+  .bs-remain.ok { color:var(--green); }
+  .bs-remain.over { color:var(--over); }
+  .bs-track {
+    height:6px; background:#000; border-radius:99px;
+    overflow:hidden; border:1px solid var(--line);
+  }
+  .bs-fill {
+    height:100%; width:0%; border-radius:99px;
+    background:linear-gradient(90deg,var(--green),var(--gold));
+    transition:width 0.35s ease;
+  }
+  .bs-fill.over { background:linear-gradient(90deg,var(--saffron),#c0392b); }
+
+  .actions { display:flex; gap:9px; flex-wrap:wrap; margin-top:15px; }
+  .btn {
+    border:none; border-radius:10px; padding:11px 16px;
+    font-family:'Karla',sans-serif; font-size:13.5px; font-weight:700;
+    cursor:pointer; transition:all 0.16s ease;
+  }
+  .btn-gold { background:linear-gradient(180deg,var(--gold),var(--rose-deep)); color:#2a1c08; }
+  .empty-autofill {
+    border:none; border-radius:99px; padding:11px 20px;
+    font-family:'Karla',sans-serif; font-size:13.5px; font-weight:700;
+    cursor:pointer; transition:all 0.15s ease;
+  }
+  .empty-autofill:hover { filter:brightness(1.08); transform:scale(1.03); }
+  .btn-gold:hover { filter:brightness(1.08); transform:translateY(-1px); }
+
+  /* ---- Gap slot: shown between the last shabad and Mantra Jaap when
+         the playlist still has unused time in the budget. ---- */
+  .gap-slot {
+    display:flex; align-items:center; gap:14px;
+    margin:7px 0; padding:16px 18px;
+    border:1.5px dashed var(--line-2); border-radius:12px;
+    background:rgba(217,164,65,0.05);
+  }
+  .gap-slot-text { min-width:0; flex:1; }
+  .gap-slot-title {
+    font-family:'Karla',sans-serif; font-size:13.5px; font-weight:700;
+    color:var(--ink-soft);
+  }
+  .gap-slot-sub {
+    font-size:12px; color:var(--ink-mute); margin-top:2px;
+    font-variant-numeric:tabular-nums;
+  }
+  .gap-slot-btn {
+    flex-shrink:0; border:none; cursor:pointer;
+    background:linear-gradient(180deg,var(--gold),var(--rose-deep)); color:#2a1c08;
+    border-radius:99px; padding:10px 16px;
+    font-family:'Karla',sans-serif; font-size:12.5px; font-weight:700;
+    transition:all 0.15s ease;
+  }
+  .gap-slot-btn:hover { filter:brightness(1.08); transform:scale(1.03); }
+  .btn-ghost { background:var(--panel-2); color:var(--ink-soft); border:1px solid var(--line-2); }
+  .btn-ghost:hover { border-color:var(--gold); color:var(--ink); }
+
+  .search-row { display:flex; gap:10px; flex-wrap:wrap; }
+  .search-row input[type="text"]{ flex:2; min-width:140px; }
+  /* Sort: a button that opens a popup menu */
+  .sort-menu { flex:1; min-width:120px; position:relative; }
+  .sort-btn {
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    gap:8px; background:var(--bg); border:1px solid var(--line-2);
+    color:var(--ink-soft); border-radius:9px; padding:9px 12px;
+    font-family:'Karla',sans-serif; font-size:12.5px; font-weight:600;
+    cursor:pointer; transition:all 0.15s ease;
+  }
+  .sort-btn:hover { border-color:var(--gold); color:var(--ink); }
+  .sort-btn-label { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sort-pop {
+    position:absolute; top:calc(100% + 6px); right:0; z-index:30;
+    min-width:200px; background:var(--panel);
+    border:1px solid var(--line-2); border-radius:10px;
+    box-shadow:0 16px 40px rgba(0,0,0,0.55); padding:6px;
+  }
+  .sort-pop-head {
+    font-size:10.5px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.1em; color:var(--ink-mute); padding:7px 10px 5px;
+  }
+  .sort-opt {
+    width:100%; text-align:left; background:none; border:none;
+    color:var(--ink-soft); font-family:'Karla',sans-serif;
+    font-size:13px; font-weight:600; cursor:pointer;
+    padding:9px 10px; border-radius:7px; transition:background 0.12s ease;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .sort-opt:hover { background:var(--panel-2); color:var(--ink); }
+  .sort-opt.active { color:var(--gold-soft); }
+  .sort-opt.active::after {
+    content:"\2713"; color:var(--green); font-weight:700;
+  }
+  .lib-actions { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:11px; }
+  .lib-act {
+    flex:1; min-width:84px; background:transparent;
+    border:1px solid var(--line-2); color:var(--ink-soft);
+    border-radius:99px; padding:7px 10px; font-family:'Karla',sans-serif;
+    font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s ease;
+  }
+  .lib-act:hover { border-color:var(--gold); color:var(--ink); }
+  /* Play — quiet gold outline, the primary action */
+  .lib-act-primary { border-color:var(--gold); color:var(--gold-soft); }
+  .lib-act-primary:hover { background:rgba(217,164,65,0.12); color:var(--gold-soft); }
+  /* Shuffle toggle — a soft tint when on, not a solid block */
+  .lib-act.toggled {
+    background:rgba(224,123,57,0.16);
+    border-color:var(--saffron); color:var(--saffron);
+  }
+  .lib-act.toggled:hover { background:rgba(224,123,57,0.24); color:var(--saffron); }
+  .chips { display:flex; gap:7px; flex-wrap:wrap; margin:11px 0 4px; }
+  .chip {
+    background:var(--panel-2); border:1px solid var(--line-2); color:var(--ink-soft);
+    border-radius:99px; padding:7px 13px; font-size:12.5px; font-weight:600;
+    cursor:pointer; transition:all 0.15s ease; font-family:'Karla',sans-serif;
+  }
+  .chip:hover { border-color:var(--gold); }
+  .chip.active { background:var(--gold); color:#2a1c08; border-color:var(--gold-soft); }
+
+  .list {
+    margin-top:12px; max-height:430px; overflow-y:auto;
+    border:1px solid var(--line); border-radius:10px;
+  }
+  .list.short { max-height:175px; }
+  .list::-webkit-scrollbar { width:9px; }
+  .list::-webkit-scrollbar-thumb { background:var(--line-2); border-radius:9px; }
+
+  .track {
+    display:flex; align-items:center; gap:10px; padding:10px 13px;
+    border-bottom:1px solid var(--line); transition:background 0.12s ease;
+  }
+  .track:last-child { border-bottom:none; }
+  .track:hover { background:var(--panel-2); }
+  .track.playing { background:#3a2a1540; }
+  .track.playing .t-title { color:var(--gold-soft); }
+  .track.missing { opacity:0.5; }
+  /* Tap-to-play rows: whole row is clickable, hover highlights it */
+  .track.row-play { cursor:pointer; }
+  .track.row-play:hover { background:var(--panel-3); }
+  .track.row-play:hover .t-title { color:var(--gold-soft); }
+  .track.row-play:hover .t-meta { color:var(--ink-soft); }
+
+  .t-info { flex:1; min-width:0; }
+  .t-title {
+    font-size:14px; font-weight:600; color:var(--ink);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .t-meta {
+    font-size:12px; color:var(--ink-mute);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .t-dur {
+    font-size:12.5px; color:var(--ink-soft);
+    font-variant-numeric:tabular-nums; flex-shrink:0;
+  }
+  .tag {
+    font-size:10px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.06em; padding:2px 7px; border-radius:5px; flex-shrink:0;
+  }
+  .tag-vyakhya { background:#4a351a; color:var(--gold-soft); }
+  .tag-bookend { background:#2f3f28; color:var(--green); }
+  .tag-missing { background:#4a2418; color:var(--saffron); }
+
+  .t-btn {
+    width:30px; height:30px; border-radius:8px; flex-shrink:0;
+    border:1px solid var(--line-2); background:var(--panel-2);
+    color:var(--ink-soft); cursor:pointer; font-size:14px;
+    display:flex; align-items:center; justify-content:center;
+    transition:all 0.14s ease;
+  }
+  .t-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .t-btn.added { background:var(--green); color:#1a2414; border-color:var(--green); }
+  .t-num {
+    width:22px; text-align:center; font-size:12px; color:var(--ink-mute);
+    font-variant-numeric:tabular-nums; flex-shrink:0;
+  }
+  .reorder { display:flex; flex-direction:column; gap:2px; flex-shrink:0; }
+  .reorder button {
+    width:22px; height:14px; border:1px solid var(--line-2);
+    background:var(--panel-2); color:var(--ink-soft); cursor:pointer;
+    font-size:8px; border-radius:4px; display:flex;
+    align-items:center; justify-content:center; padding:0;
+  }
+  .reorder button:hover { border-color:var(--gold); color:var(--gold); }
+  .reorder button:disabled { opacity:0.25; cursor:not-allowed; }
+  .drag-handle { cursor:grab; color:var(--ink-mute); font-size:14px; flex-shrink:0; }
+  .pl-list-header {
+    display:flex; align-items:center; gap:8px; margin-top:14px;
+    padding:8px 13px; font-size:11.5px; font-weight:600;
+    color:var(--ink-mute); background:var(--bg-soft);
+    border:1px solid var(--line); border-bottom:none;
+    border-radius:10px 10px 0 0;
+  }
+  .pl-list-header .plh-icon { font-size:13px; color:var(--gold); }
+  .pl-list-header + .list { border-radius:0 0 10px 10px; }
+  .track.dragging { opacity:0.4; }
+
+  .empty { padding:28px 14px; text-align:center; color:var(--ink-mute); font-size:13.5px; }
+
+  /* Player bar */
+  .player {
+    position:fixed; bottom:0; left:0; right:0;
+    background:linear-gradient(180deg,var(--panel),var(--bg-soft));
+    border-top:1px solid var(--line-2);
+    box-shadow:0 -14px 40px rgba(0,0,0,0.5); padding:13px 22px; z-index:50;
+  }
+  .player-inner {
+    max-width:1320px; margin:0 auto; display:flex; align-items:center; gap:18px;
+  }
+  .np { display:flex; align-items:center; gap:13px; width:250px; flex-shrink:0; }
+  .np-art {
+    width:52px; height:52px; border-radius:9px; flex-shrink:0; overflow:hidden;
+    background:linear-gradient(135deg,var(--gold),var(--saffron));
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px; color:#2a1c08;
+  }
+  .np-art img { width:100%; height:100%; object-fit:cover; display:block; }
+  .np-text { min-width:0; }
+  .np-title {
+    font-size:14px; font-weight:700;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .np-artist {
+    font-size:12px; color:var(--ink-mute);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .player-center { flex:1; }
+  .controls { display:flex; align-items:center; justify-content:center; gap:15px; }
+  .ctrl {
+    background:none; border:none; color:var(--ink-soft); cursor:pointer;
+    padding:4px; transition:color 0.14s ease;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .ctrl:hover { color:var(--gold); }
+  .ctrl:disabled { opacity:0.3; cursor:not-allowed; }
+  .ctrl-play {
+    width:42px; height:42px; border-radius:50%;
+    background:linear-gradient(180deg,var(--gold),var(--rose-deep)); color:#2a1c08;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .ctrl-play:hover { filter:brightness(1.1); color:#2a1c08; }
+  .seek-row { display:flex; align-items:center; gap:10px; margin-top:7px; }
+  .seek-row .time {
+    font-size:11.5px; color:var(--ink-mute);
+    font-variant-numeric:tabular-nums; min-width:38px;
+  }
+  /* Track seek bar — draggable, with a knob that appears on hover/drag. */
+  .seek {
+    flex:1; height:6px; background:var(--bg); border-radius:99px;
+    cursor:pointer; border:1px solid var(--line); position:relative;
+  }
+  .seek-fill {
+    height:100%; width:0%; border-radius:99px; position:relative;
+    background:linear-gradient(90deg,var(--gold),var(--gold-soft));
+  }
+  .seek-knob {
+    position:absolute; right:-6px; top:50%;
+    width:12px; height:12px; border-radius:50%;
+    background:var(--ink); transform:translateY(-50%) scale(0);
+    transition:transform 0.12s ease; box-shadow:0 1px 4px rgba(0,0,0,0.5);
+  }
+  .seek:hover .seek-knob,
+  .seek.dragging .seek-knob { transform:translateY(-50%) scale(1); }
+  .seek.dragging { cursor:grabbing; }
+  /* Footer satsang-progress strip — sits beside the track seek bar,
+     only visible while the satsang playlist itself is playing. */
+  .footer-satsang {
+    display:none; align-items:center; gap:8px; flex-shrink:0;
+    padding-left:12px; margin-left:2px;
+    border-left:1px solid var(--line-2);
+  }
+  .footer-satsang.show { display:flex; }
+  .fs-label {
+    font-size:10px; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--ink-mute); font-weight:700;
+  }
+  .fs-track {
+    width:90px; height:5px; background:var(--bg); border-radius:99px;
+    overflow:hidden; border:1px solid var(--line);
+  }
+  .fs-fill {
+    height:100%; width:0%; border-radius:99px;
+    background:linear-gradient(90deg,var(--green),var(--gold));
+  }
+  .fs-text {
+    font-size:11px; color:var(--ink-mute);
+    font-variant-numeric:tabular-nums; white-space:nowrap;
+  }
+  .player-right {
+    width:200px; flex-shrink:0; display:flex; flex-direction:column;
+    gap:7px; align-items:flex-end;
+  }
+  .vol-row { display:flex; align-items:center; gap:8px; width:100%; justify-content:flex-end; }
+  .vol-row .vicon {
+    color:var(--ink-soft); display:flex; align-items:center;
+    justify-content:center; flex-shrink:0;
+    background:none; border:none; padding:4px; cursor:pointer;
+    border-radius:6px; transition:all 0.14s ease;
+  }
+  .vol-row .vicon:hover { color:var(--gold); background:var(--panel-2); }
+  .vol-row .vicon.muted { color:var(--saffron); }
+  .vol-slider { width:104px; accent-color:var(--gold); }
+  .leveler-toggle {
+    display:flex; align-items:center; gap:6px;
+    font-size:11.5px; color:var(--ink-soft); cursor:pointer;
+  }
+  .leveler-toggle input { accent-color:var(--gold); width:15px; height:15px; }
+  .gap-indicator { font-size:11px; color:var(--ink-mute); min-height:14px; }
+  .gap-indicator.active { color:var(--gold-soft); font-weight:600; }
+
+  .toast {
+    position:fixed; bottom:128px; left:50%;
+    transform:translateX(-50%) translateY(16px);
+    background:var(--panel-3); border:1px solid var(--gold); color:var(--ink);
+    padding:11px 18px; border-radius:10px; font-size:13px; font-weight:600;
+    opacity:0; pointer-events:none; transition:all 0.28s ease; z-index:60;
+    box-shadow:var(--shadow); max-width:90vw;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @media (max-width:720px){
+    .np { width:auto; }
+    .np-text { display:none; }
+    .player-right { width:auto; }
+    .vol-slider { width:70px; }
+    /* Too little room for the satsang strip on a phone-width player. */
+    .footer-satsang.show { display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="banner">
+    <div class="banner-glow"></div>
+    <div class="banner-deco banner-deco-left"></div>
+    <div class="banner-deco banner-deco-right"></div>
+    <div class="banner-inner">
+      <div class="banner-portrait">
+        <img id="bannerImg" src="banner/guruji_rose.jpg" alt="Guruji"
+             onerror="this.closest('.banner-portrait').classList.add('no-img')" />
+        <div class="banner-portrait-fallback">&#2384;</div>
+      </div>
+      <div class="banner-title">
+        <div class="banner-mark">Jai Guruji</div>
+        <h1>Satsang Player</h1>
+        <div class="banner-sub">Guruji's blessed shabad playlist for satsang</div>
+      </div>
+    </div>
+    <div class="offline-dot" id="offlineDot">
+      <span class="d"></span><span id="offlineText">Loading...</span>
+    </div>
+    <button class="theme-toggle" id="themeToggle"
+            title="Switch colour theme">
+      <span id="themeLabel">Orange theme</span>
+    </button>
+  </div>
+
+  <div class="layout">
+
+    <!-- LEFT COLUMN: Satsang Playlist (hero pinned, body scrolls) -->
+    <div class="zone-playlist">
+      <div class="card playlist-card">
+
+        <!-- PINNED: gradient header + control row -->
+        <div class="pl-pinned">
+          <div class="pl-hero">
+            <div class="pl-hero-art" id="plHeroArt">
+              <img id="plHeroImg" src="banner/guruji_rose.jpg" alt="Guruji"
+                   onerror="this.closest('.pl-hero-art').classList.add('no-img')" />
+              <div class="pl-hero-art-fallback">&#2384;</div>
+            </div>
+            <div class="pl-hero-text">
+              <div class="pl-hero-kicker">Satsang</div>
+              <h2 class="pl-hero-title">Satsang Playlist</h2>
+              <div class="pl-hero-meta">
+                <span id="plCount">0 tracks</span>
+                <span class="pl-hero-dot">&middot;</span>
+                <span id="plLength">0:00</span>
+              </div>
+            </div>
+          </div>
+          <div class="pl-controls">
+            <button class="pl-play-big" id="playPauseAll" title="Play / pause the satsang">
+              <span class="pl-icon" id="plBigIcon"></span></button>
+            <button class="pl-icon-btn" id="restartAll" title="Restart the satsang playlist">
+              &#8635;</button>
+            <button class="pl-ctrl-ghost" id="autoFill" title="Auto-fill the playlist">
+              &#10022; Auto-Fill</button>
+            <button class="pl-ctrl-ghost" id="clearList" title="Clear the playlist">
+              Clear</button>
+          </div>
+          <!-- Compact budget strip: stays pinned so the user always sees
+               how full the playlist is without scrolling up. -->
+          <div class="budget-strip">
+            <div class="bs-figs">
+              <span class="bs-used" id="usedTime">0:00</span>
+              <span class="bs-sep">/</span>
+              <span class="bs-target" id="bsTarget">2:00:00</span>
+              <span class="bs-remain ok" id="remainTime">2:00:00 left</span>
+            </div>
+            <div class="bs-track"><div class="bs-fill" id="timeElapsed"></div></div>
+          </div>
+        </div>
+
+        <!-- SCROLLS: duration, track list -->
+        <div class="pl-scroll" id="plScroll">
+          <div class="dur-block">
+            <span class="dur-label">Duration</span>
+            <div class="durations" id="durations">
+              <button class="dur-btn" data-mins="60">1 Hour</button>
+              <button class="dur-btn active" data-mins="120">2 Hours</button>
+              <button class="dur-btn" data-mins="custom">Custom</button>
+            </div>
+            <div class="custom-row" id="customRow" style="display:none;">
+              <label>Minutes</label>
+              <input type="number" id="customMins" min="5" max="600" value="75" />
+            </div>
+          </div>
+
+          <div class="pl-list-header">
+            <span class="plh-icon">&#9776;</span>
+            <span>Drag any shabad to reorder the satsang</span>
+          </div>
+          <div class="list" id="playlistList" style="margin-top:0;"></div>
+
+          <div class="card aarti-card">
+            <div class="card-head">
+              <span class="dot"></span>
+              <h2>Aartis &amp; Extras</h2>
+              <span class="count">play any time &middot; not timed</span>
+            </div>
+            <div class="list short" id="extrasList"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Swaroop slideshow on top, Shabad Library below -->
+    <div class="zone-right">
+
+      <aside class="swaroop-panel" id="swaroopPanel">
+        <div class="swaroop-stage" id="swaroopStage">
+          <div class="slide-fallback" id="slideFallback">
+            <div class="om">&#2384;</div>
+            <div style="font-size:12px; text-align:center; padding:0 20px;">
+              Add photos to the <b>Guruji Swaroop Main</b> folder</div>
+          </div>
+        </div>
+        <div class="swaroop-caption">
+          <div class="big">Jai Guruji</div>
+          <div class="small" id="swaroopStatus">Preparing for satsang</div>
+        </div>
+      </aside>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="dot"></span>
+          <h2>Shabad Library</h2>
+          <span class="count" id="libCount"></span>
+        </div>
+        <div class="lib-actions">
+          <button class="lib-act lib-act-primary" id="libPlay" title="Play the library">
+            <span id="libPlayIco">&#9654;</span> <span id="libPlayLabel">Play</span></button>
+          <button class="lib-act" id="libShuffle" title="Shuffle on/off">
+            &#128256; Shuffle</button>
+          <button class="lib-act" id="libSurprise" title="Play one random shabad">
+            &#10022; Pick One</button>
+        </div>
+        <div class="search-row">
+          <input type="text" id="search" placeholder="Search shabad or artist..." />
+          <div class="sort-menu" id="sortMenu">
+            <button class="sort-btn" id="sortBtn" title="Sort the library"
+                    aria-haspopup="true" aria-expanded="false">
+              <span class="sort-btn-label" id="sortBtnLabel">Default</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="8" y1="6" x2="21" y2="6"/>
+                <line x1="8" y1="12" x2="21" y2="12"/>
+                <line x1="8" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="3.01" y2="6"/>
+                <line x1="3" y1="12" x2="3.01" y2="12"/>
+                <line x1="3" y1="18" x2="3.01" y2="18"/>
+              </svg>
+            </button>
+            <div class="sort-pop" id="sortPop" hidden>
+              <div class="sort-pop-head">Sort by</div>
+              <button class="sort-opt" data-sort="default">Default</button>
+              <button class="sort-opt" data-sort="title">A &ndash; Z</button>
+              <button class="sort-opt" data-sort="titleDesc">Z &ndash; A</button>
+              <button class="sort-opt" data-sort="durationAsc">Duration: Low to High</button>
+              <button class="sort-opt" data-sort="durationDesc">Duration: High to Low</button>
+            </div>
+          </div>
+        </div>
+        <div class="chips">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="short">Shabads</button>
+          <button class="chip" data-filter="vyakhya">Vyakhya (long)</button>
+        </div>
+        <div class="list" id="libraryList"></div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="player">
+  <div class="player-inner">
+    <div class="np">
+      <div class="np-art" id="npArt">&#9834;</div>
+      <div class="np-text">
+        <div class="np-title" id="npTitle">Nothing playing</div>
+        <div class="np-artist" id="npArtist">Build a playlist or play anything from the library to begin</div>
+      </div>
+    </div>
+    <div class="player-center">
+      <div class="controls">
+        <button class="ctrl" id="prevBtn" title="Previous">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <path d="M7 6a1 1 0 0 1 2 0v4.2l9.4-5.5A1 1 0 0 1 20 5.6v12.8a1 1 0 0 1-1.6.9L9 13.8V18a1 1 0 0 1-2 0z"/>
+          </svg></button>
+        <button class="ctrl ctrl-play" id="playBtn" title="Play/Pause">
+          <svg class="ctrl-ico" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+            <path d="M8 5.6v12.8a1 1 0 0 0 1.5.9l10.3-6.4a1 1 0 0 0 0-1.7L9.5 4.7A1 1 0 0 0 8 5.6z"/>
+          </svg></button>
+        <button class="ctrl" id="nextBtn" title="Next">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <path d="M17 6a1 1 0 0 0-2 0v4.2L5.6 4.7A1 1 0 0 0 4 5.6v12.8a1 1 0 0 0 1.6.9L15 13.8V18a1 1 0 0 0 2 0z"/>
+          </svg></button>
+      </div>
+      <div class="seek-row">
+        <span class="time" id="curTime">0:00</span>
+        <div class="seek" id="seek"><div class="seek-fill" id="seekFill"><div class="seek-knob"></div></div></div>
+        <span class="time" id="totTime">0:00</span>
+        <div class="footer-satsang" id="footerSatsang">
+          <span class="fs-label">Satsang</span>
+          <div class="fs-track"><div class="fs-fill" id="fsFill"></div></div>
+          <span class="fs-text" id="fsText">--</span>
+        </div>
+      </div>
+    </div>
+    <div class="player-right">
+      <div class="vol-row">
+        <button class="vicon" id="muteBtn" title="Mute" aria-label="Mute">
+          <span id="vIconWrap"></span>
+        </button>
+        <input type="range" class="vol-slider" id="volSlider"
+               min="0" max="100" value="100" />
+      </div>
+      <label class="leveler-toggle">
+        <input type="checkbox" id="levelerToggle" checked /> Auto Volume
+      </label>
+      <div class="gap-indicator" id="gapIndicator">&nbsp;</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<audio id="audio" crossorigin="anonymous"></audio>
+
+<script>
+/* ===================================================================
+   Guruji Ka Satsang Player
+   Two files run everything: this index.html + tracks.json
+   =================================================================== */
+const CONFIG = {
+  tracksFile: 'tracks.json',
+  audioBase: '',
+  vyakhyaForTwoHour: true,
+  slideIntervalMs: 6000,   // how long each slideshow photo shows
+  gapSeconds: 2,           // fixed gap between tracks
+};
+
+// The "Auto-Fill the remaining time" slot only appears when at least
+// this much budget time is free — enough to fit another shabad.
+const MIN_GAP_FILL_SECONDS = 180;   // 3 minutes
+
+let LIBRARY = [], EXTRAS = [], playlist = [];
+let openingTrack = null, closingTrack = null;
+let currentIndex = -1;
+/* Playback mode:
+   'playlist' — playing the timed Satsang Playlist (left column)
+   'library'  — playing a queue built from the Shabad Library (right column)
+   'single'   — playing exactly one track (Pick One, or an aarti); stops after */
+let currentMode = 'playlist';
+let nowPlaying = null;          // the track object currently loaded in the player
+let targetMinutes = 120;
+let libFilter = 'all';
+let libSort = 'default';        // 'default' | 'title' | 'duration'
+let currentTheme = 'rose';      // 'rose' | 'orange' — see theme toggle
+let libShuffleOn = false;       // Shuffle is a toggle, not a one-shot action
+let libQueue = [];              // ordered queue of tracks for 'library' mode
+let libQueueIndex = -1;         // position within libQueue
+let gapTimer = null;
+let recentlyUsed = [];
+let levelerOn = true;
+
+const audio = document.getElementById('audio');
+
+/* ---------- Auto Volume + master volume (Web Audio) ---------- */
+/* Chain: source -> levelerGain -> compressor -> masterVolume -> output
+   The master volume sits AFTER the leveler, so the slider always wins
+   and never fights the compressor. */
+let audioCtx=null, srcNode=null, gainNode=null, compNode=null, masterNode=null;
+let masterVolume=1;   // 0..1, set by the slider (perceptual curve applied)
+function ensureAudioGraph(){
+  if(audioCtx) return;
+  try{
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    srcNode=audioCtx.createMediaElementSource(audio);
+    gainNode=audioCtx.createGain();        // per-track leveling correction
+    compNode=audioCtx.createDynamicsCompressor();
+    compNode.threshold.value=-24; compNode.knee.value=30;
+    compNode.ratio.value=3; compNode.attack.value=0.01; compNode.release.value=0.25;
+    masterNode=audioCtx.createGain();      // master volume — the slider
+    masterNode.gain.value=masterVolume;
+    srcNode.connect(gainNode);
+    gainNode.connect(compNode);
+    compNode.connect(masterNode);
+    masterNode.connect(audioCtx.destination);
+  }catch(e){ audioCtx=null; }
+}
+function applyGainFor(track){
+  if(!gainNode) return;
+  const db=(levelerOn&&track&&typeof track.gainDb==='number')?track.gainDb:0;
+  gainNode.gain.value=Math.pow(10,db/20);
+}
+/* Slider 0..100 -> perceptual volume. Human hearing is logarithmic,
+   so we square the fraction: small slider moves at the low end make a
+   gentle change, just like Spotify and other players. */
+function setMasterVolume(sliderValue){
+  const frac=Math.max(0,Math.min(1,sliderValue/100));
+  masterVolume=frac*frac;                 // perceptual curve
+  if(masterNode){
+    masterNode.gain.value=masterVolume;
+  }else{
+    // Web Audio not active yet — fall back to the plain element volume.
+    audio.volume=masterVolume;
+  }
+}
+
+/* ---------- Mute / unmute ---------- */
+let isMuted=false;
+let preMuteValue=100;     // slider value remembered while muted
+function updateVolumeIcon(){
+  const wrap=document.getElementById('vIconWrap');
+  const btn=document.getElementById('muteBtn');
+  if(!wrap) return;
+  const sliderVal=parseInt(document.getElementById('volSlider').value);
+  const silent=isMuted||sliderVal===0;
+  btn.classList.toggle('muted',silent);
+  btn.title=silent?'Unmute':'Mute';
+  if(silent){
+    // muted speaker with an X
+    wrap.innerHTML=`<svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+      <path d="M11 5 6 9H2v6h4l5 4z"/>
+      <line x1="22" y1="9" x2="16" y2="15"/>
+      <line x1="16" y1="9" x2="22" y2="15"/>
+    </svg>`;
+  }else{
+    // speaker with sound waves (full when loud, one wave when quiet)
+    const waves=sliderVal<45
+      ? `<path d="M15.5 8.5a5 5 0 0 1 0 7"/>`
+      : `<path d="M15.5 8.5a5 5 0 0 1 0 7"/>
+         <path d="M18.5 5.5a9 9 0 0 1 0 13"/>`;
+    wrap.innerHTML=`<svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+      <path d="M11 5 6 9H2v6h4l5 4z"/>${waves}</svg>`;
+  }
+}
+function toggleMute(){
+  const slider=document.getElementById('volSlider');
+  if(isMuted){
+    // Unmute — restore the slider to where it was.
+    isMuted=false;
+    slider.value=preMuteValue||100;
+    setMasterVolume(parseInt(slider.value));
+  }else{
+    // Mute — remember the level, drop to silent.
+    preMuteValue=parseInt(slider.value)||100;
+    isMuted=true;
+    slider.value=0;
+    setMasterVolume(0);
+  }
+  updateVolumeIcon();
+}
+
+/* ---------- Helpers ---------- */
+function fmt(sec){
+  sec=Math.round(sec||0);
+  const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
+  if(h>0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+function cleanTitle(t){ return t.replace(/^\s*\d{1,3}\s+(?=\S)/,'').trim()||t; }
+function escapeHtml(s){
+  return String(s).replace(/[&<>"]/g,c=>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+/* ---------- Slideshow ---------- */
+/* Photos come from the "slideshow" list in tracks.json, which the
+   scanner fills from the Guruji Swaroop Main folder. Each slide shows
+   the WHOLE photo (uncropped) over a soft blurred fill, so portrait
+   and landscape photos both look right. */
+function setupSlideshow(photoList){
+  const stage=document.getElementById('swaroopStage');
+  const fb=document.getElementById('slideFallback');
+  const found=Array.isArray(photoList)?photoList.slice():[];
+
+  // Clear any slides from a previous load (e.g. after Reload Library).
+  stage.querySelectorAll('.slide').forEach(el=>el.remove());
+  clearInterval(stage._slideTimer);
+
+  if(found.length===0){
+    fb.style.display='flex';     // keep the calm fallback
+    return;
+  }
+  fb.style.display='none';
+  found.forEach((url,idx)=>{
+    const safe=encodeURI(url);
+    const slide=document.createElement('div');
+    slide.className='slide'+(idx===0?' active':'');
+    slide.innerHTML=
+      `<div class="blur" style="background-image:url('${safe}')"></div>`+
+      `<div class="photo" style="background-image:url('${safe}')"></div>`;
+    stage.insertBefore(slide,fb);
+  });
+  if(found.length>1){
+    let cur=0;
+    stage._slideTimer=setInterval(()=>{
+      const sl=stage.querySelectorAll('.slide');
+      if(sl.length<2) return;
+      sl[cur].classList.remove('active');
+      cur=(cur+1)%sl.length;
+      sl[cur].classList.add('active');
+    },CONFIG.slideIntervalMs);
+  }
+}
+
+/* ---------- Load tracks.json ---------- */
+async function loadTracks(){
+  try{
+    const res=await fetch(CONFIG.tracksFile+'?v='+Date.now());
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    const all=(data.tracks||[]);
+    all.forEach(t=>{ t.displayTitle=cleanTitle(t.title); });
+    EXTRAS=all.filter(t=>t.category==='Aarti'||t.isAarti);
+    const shabad=all.filter(t=>t.category==='Shabad');
+    openingTrack=shabad.find(t=>t.isOpening)||null;
+    closingTrack=shabad.find(t=>t.isClosing)||null;
+    LIBRARY=shabad.filter(t=>!t.isOpening&&!t.isClosing);
+    document.getElementById('libCount').textContent=`${LIBRARY.length} shabads`;
+    setOffline(true);
+    setupSlideshow(data.slideshow);    // photos from Guruji Swaroop Main
+    renderLibrary(); renderExtras(); resetPlaylist();
+    toast('Library loaded \u2014 '+LIBRARY.length+' shabads, '+EXTRAS.length+' aartis');
+  }catch(e){
+    setOffline(false);
+    document.getElementById('libraryList').innerHTML=
+      `<div class="empty">Could not load <b>tracks.json</b>.<br><br>
+       Open this app through a local server, with tracks.json beside it.<br>
+       <span style="color:var(--ink-mute)">${e.message}</span></div>`;
+  }
+}
+function setOffline(ready){
+  const d=document.getElementById('offlineDot');
+  const t=document.getElementById('offlineText');
+  if(ready){ d.classList.add('ready'); t.textContent='Library ready'; }
+  else { d.classList.remove('ready'); t.textContent='Not loaded'; }
+}
+
+/* ---------- Playlist ---------- */
+function resetPlaylist(){
+  playlist=[];
+  if(openingTrack) playlist.push(openingTrack);
+  if(closingTrack) playlist.push(closingTrack);
+  renderPlaylist(); updateBudget(); updateSatsangProgress();
+}
+function middleTracks(){ return playlist.filter(t=>!t.isOpening&&!t.isClosing); }
+function rebuildPlaylist(mid){
+  playlist=[];
+  if(openingTrack) playlist.push(openingTrack);
+  playlist.push(...mid);
+  if(closingTrack) playlist.push(closingTrack);
+  renderPlaylist(); updateBudget(); updateSatsangProgress();
+}
+
+/* ---------- Time budget ---------- */
+function totalSeconds(){
+  const tr=playlist.reduce((s,t)=>s+(t.durationSeconds||0),0);
+  const gaps=Math.max(0,playlist.length-1)*CONFIG.gapSeconds;
+  return tr+gaps;
+}
+function updateBudget(){
+  const used=totalSeconds(),target=targetMinutes*60,remain=target-used;
+  const usedEl=document.getElementById('usedTime');
+  const remEl=document.getElementById('remainTime');
+  const tgtEl=document.getElementById('bsTarget');
+  const fill=document.getElementById('timeElapsed');
+  usedEl.textContent=fmt(used);
+  tgtEl.textContent=fmt(target);
+  if(remain<0){
+    remEl.textContent=fmt(-remain)+' over';
+    remEl.className='bs-remain over';
+    usedEl.className='bs-used over';
+    fill.classList.add('over');
+  }else{
+    remEl.textContent=fmt(remain)+' left';
+    remEl.className='bs-remain ok';
+    usedEl.className='bs-used';
+    fill.classList.remove('over');
+  }
+  fill.style.width=Math.min(100,(used/target)*100)+'%';
+}
+
+/* ---------- Satsang-wide progress — shown in the footer player ----------
+   Only meaningful while the timed Satsang Playlist is playing. When
+   playing from the library (or nothing), the footer strip is hidden. */
+function updateSatsangProgress(){
+  const strip=document.getElementById('footerSatsang');
+  const fill=document.getElementById('fsFill');
+  const txt=document.getElementById('fsText');
+  const total=totalSeconds();
+  if(total<=0||currentMode!=='playlist'||currentIndex<0){
+    strip.classList.remove('show');
+    fill.style.width='0%'; txt.textContent='--';
+    return;
+  }
+  strip.classList.add('show');
+  // seconds of playlist completed before the current track
+  let before=0;
+  for(let i=0;i<currentIndex;i++){
+    before+=(playlist[i].durationSeconds||0)+CONFIG.gapSeconds;
+  }
+  const done=before+(audio.currentTime||0);
+  const pct=Math.min(100,(done/total)*100);
+  fill.style.width=pct+'%';
+  txt.textContent=fmt(done)+' / '+fmt(total);
+}
+
+/* ---------- Fuzzy search ----------
+   Scores how well a query matches a text. Each query word must match a
+   REAL word in the text (allowing only small spelling differences via
+   edit distance) -- letters scattered across a long title do NOT count.
+   Returns a score (higher = better) or -1 for no match. */
+
+/* Levenshtein edit distance: how many single-letter inserts, deletes
+   or changes turn word a into word b. */
+function editDistance(a,b){
+  const m=a.length,n=b.length;
+  if(m===0) return n;
+  if(n===0) return m;
+  let prev=new Array(n+1);
+  for(let j=0;j<=n;j++) prev[j]=j;
+  for(let i=1;i<=m;i++){
+    let cur=[i];
+    for(let j=1;j<=n;j++){
+      const cost=a[i-1]===b[j-1]?0:1;
+      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+cost);
+    }
+    prev=cur;
+  }
+  return prev[n];
+}
+
+/* Score one query word against one text word. Returns 0..100, or -1
+   if they are not close enough to count as the same word. */
+function matchWord(q,word){
+  if(!word) return -1;
+  if(word===q) return 100;                 // exact word
+  if(word.startsWith(q)) return 92;         // query is the word's start
+  if(word.includes(q)) return 82;           // query sits inside the word
+  // Allow small misspellings: distance must be tiny relative to length.
+  const dist=editDistance(q,word);
+  const tolerance=q.length<=4?1:(q.length<=7?2:3);
+  if(dist<=tolerance){
+    return 70-dist*12;                      // closer spelling scores higher
+  }
+  return -1;
+}
+
+/* Score a whole query against a whole text. EVERY query word must
+   match some real word in the text, or it is no match at all. */
+function fuzzyScore(query,text){
+  query=query.toLowerCase().trim();
+  text=text.toLowerCase();
+  if(!query) return 0;
+  if(text.includes(query)) return 2000-text.indexOf(query); // exact phrase
+  const qWords=query.split(/\s+/).filter(Boolean);
+  const tWords=text.split(/\s+/).filter(Boolean);
+  let total=0;
+  for(const qw of qWords){
+    let best=-1;
+    for(const tw of tWords){
+      const s=matchWord(qw,tw);
+      if(s>best) best=s;
+    }
+    if(best<0) return -1;        // this query word matched no real word
+    total+=best;
+  }
+  // Average score per word, so longer queries are not unfairly inflated.
+  return Math.round(total/qWords.length*10);
+}
+
+/* ---------- Render library ----------
+   Returns the library rows after filter + search + sort have been
+   applied — the exact order the user currently sees. The library
+   queue (Play / Shuffle) is built from this same ordering. */
+function visibleLibraryRows(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  let rows=LIBRARY.filter(t=>{
+    if(libFilter==='vyakhya'&&!t.hasVyakhya) return false;
+    if(libFilter==='short'&&t.hasVyakhya) return false;
+    return true;
+  });
+  if(q){
+    // Fuzzy search: score every row, drop non-matches, best first.
+    rows=rows.map(t=>({
+        t,
+        score:fuzzyScore(q,t.displayTitle+' '+t.artist)
+      }))
+      .filter(x=>x.score>=0)
+      .sort((a,b)=>b.score-a.score)
+      .map(x=>x.t);
+    return rows;   // when searching, ranking by relevance wins
+  }
+  if(libSort==='title'){
+    rows.sort((a,b)=>a.displayTitle.localeCompare(b.displayTitle,
+      undefined,{sensitivity:'base'}));
+  }else if(libSort==='titleDesc'){
+    rows.sort((a,b)=>b.displayTitle.localeCompare(a.displayTitle,
+      undefined,{sensitivity:'base'}));
+  }else if(libSort==='durationAsc'){
+    rows.sort((a,b)=>(a.durationSeconds||0)-(b.durationSeconds||0));
+  }else if(libSort==='durationDesc'){
+    rows.sort((a,b)=>(b.durationSeconds||0)-(a.durationSeconds||0));
+  }
+  return rows;
+}
+function renderLibrary(){
+  const listEl=document.getElementById('libraryList');
+  const rows=visibleLibraryRows();
+  if(rows.length===0){
+    listEl.innerHTML=`<div class="empty">No shabads match your search.</div>`;
+    return;
+  }
+  const inPl=new Set(middleTracks().map(t=>t.id));
+  listEl.innerHTML=rows.map(t=>{
+    const added=inPl.has(t.id);
+    const isPlaying=nowPlaying&&nowPlaying.id===t.id&&!audio.paused;
+    return `<div class="track row-play ${isPlaying?'playing':''}" data-id="${t.id}"
+         title="Tap to play">
+      <div class="t-info">
+        <div class="t-title">${escapeHtml(t.displayTitle)}</div>
+        <div class="t-meta">${escapeHtml(t.artist)}</div>
+      </div>
+      ${t.hasVyakhya?'<span class="tag tag-vyakhya">Vyakhya</span>':''}
+      <span class="t-dur">${t.duration}</span>
+      <button class="t-btn add-btn ${added?'added':''}" data-id="${t.id}"
+        title="${added?'Remove from playlist':'Add to playlist'}">
+        ${added?'\u2713':'+'}</button>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- Render extras ---------- */
+function renderExtras(){
+  const el=document.getElementById('extrasList');
+  if(EXTRAS.length===0){
+    el.innerHTML=`<div class="empty">No aarti tracks found.</div>`;
+    return;
+  }
+  el.innerHTML=EXTRAS.map(t=>{
+    const isPlaying=nowPlaying&&nowPlaying.id===t.id&&!audio.paused;
+    return `<div class="track row-play ${isPlaying?'playing':''}" data-extra="${t.id}"
+         title="Tap to play">
+      <div class="t-info">
+        <div class="t-title">${escapeHtml(t.displayTitle)}</div>
+        <div class="t-meta">${escapeHtml(t.artist)}</div>
+      </div>
+      <span class="t-dur">${t.duration}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- Render playlist ---------- */
+function renderPlaylist(){
+  const listEl=document.getElementById('playlistList');
+  const mids=middleTracks();
+  document.getElementById('plCount').textContent=`${playlist.length} tracks`;
+  document.getElementById('plLength').textContent=fmt(totalSeconds());
+  document.getElementById('playPauseAll').disabled=playlist.length===0;
+  document.getElementById('restartAll').disabled=playlist.length===0;
+  if(playlist.length===0){
+    listEl.innerHTML=`<div class="empty">Playlist is empty.</div>`;
+    return;
+  }
+  let html='';
+  if(openingTrack) html+=playlistRow(openingTrack,'opening');
+  if(mids.length===0){
+    html+=`<div class="empty" style="padding:20px 16px;">
+      Add shabads from the library, or tap Auto-Fill.
+      <div style="margin-top:14px;">
+        <button class="btn-gold empty-autofill" id="emptyAutoFill">
+          &#10022; Auto-Fill Playlist</button>
+      </div>
+    </div>`;
+  }else{
+    mids.forEach((t,i)=>{ html+=playlistRow(t,'middle',i,mids.length); });
+  }
+  // Gap slot: when the user has hand-picked or trimmed the playlist and
+  // there is still room for at least one more shabad, show an empty
+  // placeholder inviting them to fill the leftover time. Sits between
+  // the last shabad and the closing Mantra Jaap.
+  if(mids.length>0){
+    const remain=targetMinutes*60-totalSeconds();
+    if(remain>=MIN_GAP_FILL_SECONDS){
+      html+=`<div class="gap-slot">
+        <span class="t-num">&#9702;</span>
+        <div class="gap-slot-text">
+          <div class="gap-slot-title">Room for more in this satsang</div>
+          <div class="gap-slot-sub">${fmt(remain)} of unused time</div>
+        </div>
+        <button class="gap-slot-btn" id="fillRemaining">
+          &#10022; Auto-Fill the remaining time</button>
+      </div>`;
+    }
+  }
+  if(closingTrack) html+=playlistRow(closingTrack,'closing');
+  listEl.innerHTML=html;
+}
+function playlistRow(t,kind,midIndex,midTotal){
+  const gi=playlist.indexOf(t);
+  const isPlaying=gi===currentIndex&&currentMode==='playlist';
+  const bookend=kind==='opening'||kind==='closing';
+  const missing=t._missing;
+  let lead;
+  if(kind==='middle'){
+    lead=`<span class="drag-handle" title="Drag to reorder">\u2630</span>`;
+  }else{
+    lead=`<span class="t-num">${kind==='opening'?'\u25b8':'\u25aa'}</span>`;
+  }
+  return `<div class="track row-play ${isPlaying?'playing':''} ${missing?'missing':''}"
+       data-index="${gi}" title="Tap to play"
+       ${kind==='middle'?`draggable="true" data-mid="${midIndex}"`:''}>
+    ${lead}
+    <div class="t-info">
+      <div class="t-title">${escapeHtml(t.displayTitle)}</div>
+      <div class="t-meta">${escapeHtml(t.artist)}</div>
+    </div>
+    ${missing?'<span class="tag tag-missing">File missing</span>':''}
+    ${bookend?'<span class="tag tag-bookend">'+(kind==='opening'?'Opens':'Closes')+'</span>':''}
+    ${t.hasVyakhya?'<span class="tag tag-vyakhya">Vyakhya</span>':''}
+    <span class="t-dur">${t.duration}</span>
+    ${kind==='middle'
+      ?`<button class="t-btn remove-btn" data-id="${t.id}" title="Remove">\u2715</button>`
+      :`<span style="width:30px;flex-shrink:0;"></span>`}
+  </div>`;
+}
+
+/* ---------- Add / remove / reorder ---------- */
+function addTrack(id){
+  const t=LIBRARY.find(x=>x.id===id);
+  if(!t) return;
+  const mids=middleTracks();
+  if(mids.some(x=>x.id===id)){ removeTrack(id); return; }
+  rebuildPlaylist([...mids,t]); renderLibrary();
+}
+function removeTrack(id){
+  rebuildPlaylist(middleTracks().filter(x=>x.id!==id));
+  renderLibrary();
+}
+function moveTrack(midIndex,dir){
+  const mids=middleTracks();
+  const ni=midIndex+dir;
+  if(ni<0||ni>=mids.length) return;
+  [mids[midIndex],mids[ni]]=[mids[ni],mids[midIndex]];
+  rebuildPlaylist(mids);
+}
+
+/* ---------- Auto-fill (non-repeating) ---------- */
+function autoFill(){
+  const target=targetMinutes*60;
+  const oc=(openingTrack?openingTrack.durationSeconds:0)+
+           (closingTrack?closingTrack.durationSeconds:0);
+  let budget=target-oc;
+  if(budget<=0){ toast('Duration too short for opening + closing.'); return; }
+  const chosen=[]; let used=0;
+  const gapCost=()=>(chosen.length+1)*CONFIG.gapSeconds;
+  function freshFirst(pool){
+    const fresh=pool.filter(t=>!recentlyUsed.includes(t.id));
+    const stale=pool.filter(t=>recentlyUsed.includes(t.id));
+    shuffle(fresh); shuffle(stale);
+    return [...fresh,...stale];
+  }
+  if(CONFIG.vyakhyaForTwoHour&&targetMinutes>=120){
+    const vys=freshFirst(LIBRARY.filter(t=>t.hasVyakhya
+      && t.durationSeconds+CONFIG.gapSeconds<=budget));
+    if(vys.length){ chosen.push(vys[0]); used+=vys[0].durationSeconds; }
+  }
+  const pool=freshFirst(LIBRARY.filter(t=>!t.hasVyakhya
+    && !chosen.some(c=>c.id===t.id)));
+  for(const t of pool){
+    if(used+t.durationSeconds+gapCost()<=budget){
+      chosen.push(t); used+=t.durationSeconds;
+    }
+  }
+  recentlyUsed.push(...chosen.map(t=>t.id));
+  if(recentlyUsed.length>LIBRARY.length*0.8) recentlyUsed=chosen.map(t=>t.id);
+  rebuildPlaylist(chosen); renderLibrary();
+  setHeroImageFromPlaylist();
+  toast(`Auto-filled ${chosen.length} shabads \u00b7 ${fmt(totalSeconds())} \u00b7 fresh mix`);
+}
+
+/* ---------- Fill only the leftover time ----------
+   Unlike autoFill (which wipes and rebuilds), this KEEPS every track
+   the user already has and appends fresh shabads after them, just
+   enough to use up the remaining budget. Used by the gap-slot button. */
+function fillRemaining(){
+  const mids=middleTracks();
+  let remain=targetMinutes*60-totalSeconds();
+  if(remain<MIN_GAP_FILL_SECONDS){
+    toast('The playlist is already full.'); return;
+  }
+  // Don't reuse tracks that are already in the playlist.
+  const inPl=new Set(mids.map(t=>t.id));
+  const fresh=LIBRARY.filter(t=>!t.hasVyakhya && !inPl.has(t.id)
+    && !recentlyUsed.includes(t.id));
+  const stale=LIBRARY.filter(t=>!t.hasVyakhya && !inPl.has(t.id)
+    && recentlyUsed.includes(t.id));
+  shuffle(fresh); shuffle(stale);
+  const pool=[...fresh,...stale];
+
+  const added=[];
+  for(const t of pool){
+    // Each added track also adds one inter-track gap.
+    if(t.durationSeconds+CONFIG.gapSeconds<=remain){
+      added.push(t);
+      remain-=(t.durationSeconds+CONFIG.gapSeconds);
+    }
+  }
+  if(added.length===0){
+    toast('No shabad short enough to fit the remaining time.'); return;
+  }
+  recentlyUsed.push(...added.map(t=>t.id));
+  if(recentlyUsed.length>LIBRARY.length*0.8) recentlyUsed=added.map(t=>t.id);
+  rebuildPlaylist([...mids,...added]); renderLibrary();
+  toast(`Added ${added.length} shabad${added.length>1?'s':''} \u00b7 `+
+        `satsang now ${fmt(totalSeconds())}`);
+}
+
+/* Pick a cover image for the playlist hero from the playlist's own tracks.
+   Changes each time a new playlist is auto-filled. Falls back to the
+   fixed banner image if no track in the playlist has cover art. */
+/* The banner image that matches the current theme. */
+function themeBannerImage(){
+  return 'banner/'+(currentTheme==='orange'
+    ? 'guruji_orange.jpg' : 'guruji_rose.jpg');
+}
+function setHeroImageFromPlaylist(){
+  const img=document.getElementById('plHeroImg');
+  const wrap=document.getElementById('plHeroArt');
+  const withArt=middleTracks().filter(t=>t.artwork);
+  let src=themeBannerImage();
+  if(withArt.length){
+    src=withArt[Math.floor(Math.random()*withArt.length)].artwork;
+  }
+  wrap.classList.remove('no-img');
+  img.src=encodeURI(src);
+}
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+}
+
+/* ---------- Drag to reorder ---------- */
+let dragMid=null;
+function setupDrag(){
+  const el=document.getElementById('playlistList');
+  el.addEventListener('dragstart',e=>{
+    const r=e.target.closest('[data-mid]');
+    if(!r) return;
+    dragMid=parseInt(r.dataset.mid); r.classList.add('dragging');
+  });
+  el.addEventListener('dragend',e=>{
+    const r=e.target.closest('[data-mid]');
+    if(r) r.classList.remove('dragging');
+  });
+  el.addEventListener('dragover',e=>e.preventDefault());
+  el.addEventListener('drop',e=>{
+    e.preventDefault();
+    const r=e.target.closest('[data-mid]');
+    if(!r||dragMid===null) return;
+    const drop=parseInt(r.dataset.mid);
+    const mids=middleTracks();
+    const [m]=mids.splice(dragMid,1);
+    mids.splice(drop,0,m);
+    rebuildPlaylist(mids); dragMid=null;
+  });
+}
+
+/* ---------- Player ---------- */
+function playTrackObject(t,indexInPlaylist,mode){
+  clearTimeout(gapTimer); clearInterval(gapTimer);
+  setGapIndicator(false);
+  ensureAudioGraph();
+  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
+  applyGainFor(t);
+  currentMode=mode||'single';
+  currentIndex=(typeof indexInPlaylist==='number')?indexInPlaylist:-1;
+  nowPlaying=t;                       // remember the track, whatever the mode
+  audio.src=CONFIG.audioBase+encodeURI(t.url);
+  audio.play().then(()=>{ t._missing=false; })
+    .catch(()=>{
+      t._missing=true;
+      toast('"'+t.displayTitle+'" could not play \u2014 file may be missing.');
+      renderPlaylist();
+    });
+  updatePlayerUI(); renderPlaylist(); updateSatsangProgress();
+}
+function playIndex(i){
+  if(i<0||i>=playlist.length) return;
+  playTrackObject(playlist[i],i,'playlist');
+}
+function playSingle(t){ if(t) playTrackObject(t,-1,'single'); }
+
+/* ---------- Shabad Library — its own player ----------
+   The library is independent of the Satsang Playlist. It plays through
+   a private queue (libQueue) in 'library' mode. The footer Next/Prev
+   step through this queue; the satsang playlist is never touched. */
+
+/* Build the library queue from the rows the user currently sees,
+   honouring the Shuffle toggle. */
+function buildLibQueue(){
+  let q=visibleLibraryRows().slice();
+  if(libShuffleOn) shuffle(q);
+  return q;
+}
+/* Play a track from the library by its id. Starts (or rebuilds) the
+   library queue so Next/Prev work from wherever the user began. */
+function playLibraryTrack(id){
+  const q=buildLibQueue();
+  let idx=q.findIndex(t=>t.id===id);
+  if(idx<0){
+    // The chosen track isn't in the filtered view — play it alone.
+    const t=LIBRARY.find(x=>x.id===id);
+    if(t) playTrackObject(t,-1,'single');
+    return;
+  }
+  libQueue=q; libQueueIndex=idx;
+  playTrackObject(libQueue[idx],-1,'library');
+}
+/* Header "Play": play the whole library from the top of the queue. */
+function playLibraryAll(){
+  if(LIBRARY.length===0){ toast('Library is empty.'); return; }
+  libQueue=buildLibQueue();
+  if(libQueue.length===0){ toast('No shabads to play.'); return; }
+  libQueueIndex=0;
+  playTrackObject(libQueue[0],-1,'library');
+  toast(libShuffleOn
+    ? `Shuffling ${libQueue.length} shabads`
+    : `Playing ${libQueue.length} shabads`);
+}
+/* Advance / go back within the library queue. */
+function libQueueNext(){
+  if(libQueueIndex>=0&&libQueueIndex<libQueue.length-1){
+    libQueueIndex++;
+    playTrackObject(libQueue[libQueueIndex],-1,'library');
+  }
+}
+function libQueuePrev(){
+  if(libQueueIndex>0){
+    libQueueIndex--;
+    playTrackObject(libQueue[libQueueIndex],-1,'library');
+  }
+}
+/* Pick One: play exactly one random shabad, then stop. Mode 'single'
+   means the 'ended' handler will not advance to anything. */
+function pickOneShabad(){
+  if(LIBRARY.length===0){ toast('Library is empty.'); return; }
+  const pool=visibleLibraryRows();
+  const src=pool.length?pool:LIBRARY;
+  const t=src[Math.floor(Math.random()*src.length)];
+  playTrackObject(t,-1,'single');
+  toast('Pick One \u2014 '+t.displayTitle);
+}
+function setGapIndicator(on,secsLeft){
+  const el=document.getElementById('gapIndicator');
+  if(on){ el.classList.add('active'); el.textContent=`\u23f8 Gap \u2014 next in ${secsLeft}s`; }
+  else { el.classList.remove('active'); el.innerHTML='&nbsp;'; }
+}
+/* SVG path data for play and pause glyphs, used to swap the footer
+   play button and the library header button between states. */
+const ICON_PLAY='M8 5.6v12.8a1 1 0 0 0 1.5.9l10.3-6.4a1 1 0 0 0 0-1.7'+
+  'L9.5 4.7A1 1 0 0 0 8 5.6z';
+const ICON_PAUSE='M9 4.5H7A1.5 1.5 0 0 0 5.5 6v12A1.5 1.5 0 0 0 7 19.5h2'+
+  'A1.5 1.5 0 0 0 10.5 18V6A1.5 1.5 0 0 0 9 4.5zM17 4.5h-2A1.5 1.5 0 0 0'+
+  ' 13.5 6v12A1.5 1.5 0 0 0 15 19.5h2A1.5 1.5 0 0 0 18.5 18V6A1.5 1.5 0'+
+  ' 0 0 17 4.5z';
+function setFooterPlayIcon(playing){
+  const p=document.querySelector('#playBtn .ctrl-ico path');
+  if(p) p.setAttribute('d',playing?ICON_PAUSE:ICON_PLAY);
+}
+/* The big playlist play/pause button — a properly centred SVG icon. */
+function setBigPlayIcon(playing){
+  const el=document.getElementById('plBigIcon');
+  if(!el) return;
+  el.innerHTML=playing
+    ? `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+         <rect x="6" y="5" width="4" height="14" rx="1"/>
+         <rect x="14" y="5" width="4" height="14" rx="1"/>
+       </svg>`
+    : `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+         <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z"/>
+       </svg>`;
+}
+/* Keep the Shabad Library header button in sync: it shows Pause while
+   the library queue is actively playing, Play otherwise. */
+function updateLibHeaderButton(){
+  const ico=document.getElementById('libPlayIco');
+  const lbl=document.getElementById('libPlayLabel');
+  if(!ico||!lbl) return;
+  const libPlaying=currentMode==='library'&&!audio.paused;
+  ico.innerHTML=libPlaying?'\u2759\u2759':'\u25b6';
+  lbl.textContent=libPlaying?'Pause':'Play';
+}
+
+function updatePlayerUI(){
+  // Always use nowPlaying — works for playlist tracks AND library/aarti tracks.
+  const t=nowPlaying;
+  const pb=document.getElementById('playBtn');
+  const ppa=document.getElementById('playPauseAll');
+  const art=document.getElementById('npArt');
+  const swStatus=document.getElementById('swaroopStatus');
+  if(!t){
+    document.getElementById('npTitle').textContent='Nothing playing';
+    document.getElementById('npArtist').textContent='Build a playlist or play anything from the library to begin';
+    art.innerHTML='\u266a';
+    setFooterPlayIcon(false);
+    setBigPlayIcon(false);
+    if(swStatus) swStatus.textContent='Preparing for satsang';
+    updateLibHeaderButton();
+    return;
+  }
+  document.getElementById('npTitle').textContent=t.displayTitle;
+  let pos='';
+  if(currentMode==='playlist'&&currentIndex>=0){
+    pos=`  \u00b7  ${currentIndex+1} of ${playlist.length}`;
+  }else if(currentMode==='library'&&libQueueIndex>=0){
+    pos=`  \u00b7  ${libQueueIndex+1} of ${libQueue.length} \u00b7 Library`;
+  }else if(currentMode==='single'){
+    pos='  \u00b7  Shabad Library';
+  }
+  document.getElementById('npArtist').textContent=t.artist+pos;
+  // Cover art from the track's extracted image, if any.
+  if(t.artwork){
+    art.innerHTML=`<img src="${encodeURI(t.artwork)}" alt=""
+      onerror="this.parentNode.innerHTML='\u266a'">`;
+  }else{
+    art.innerHTML='\u266a';
+  }
+  const playing=!audio.paused;
+  setFooterPlayIcon(playing);
+  // The big round button shows pause only while playing the playlist.
+  if(currentMode==='playlist'){
+    setBigPlayIcon(playing);
+  }else{
+    setBigPlayIcon(false);
+  }
+  updateLibHeaderButton();
+  // Swaroop caption: "in progress" while playing, else "preparing".
+  if(swStatus){
+    swStatus.textContent=playing?'Satsang in progress':'Preparing for satsang';
+  }
+  // Refresh list highlighting so the playing row shows everywhere.
+  renderLibrary(); renderExtras();
+}
+
+document.getElementById('playPauseAll').onclick=()=>{
+  if(playlist.length===0) return;
+  if(currentMode==='playlist'&&currentIndex>=0){
+    if(audio.paused) audio.play(); else audio.pause();
+  }else{
+    playIndex(0);   // start the satsang from the top
+  }
+  updatePlayerUI();
+};
+document.getElementById('restartAll').onclick=()=>{
+  if(playlist.length) playIndex(0);
+};
+document.getElementById('playBtn').onclick=()=>{
+  if(!audio.src&&playlist.length){ playIndex(0); return; }
+  if(audio.paused) audio.play(); else audio.pause();
+  updatePlayerUI();
+};
+document.getElementById('nextBtn').onclick=()=>{
+  // Next steps through whichever queue is currently playing.
+  if(currentMode==='playlist'){
+    if(currentIndex>=0&&currentIndex<playlist.length-1) playIndex(currentIndex+1);
+  }else if(currentMode==='library'){
+    libQueueNext();
+  }
+  // In 'single' mode there is nothing to advance to.
+};
+document.getElementById('prevBtn').onclick=()=>{
+  // Restart the current track if we're more than 3s in; else go back.
+  if(audio.currentTime>3){ audio.currentTime=0; return; }
+  if(currentMode==='playlist'){
+    if(currentIndex>0) playIndex(currentIndex-1);
+  }else if(currentMode==='library'){
+    libQueuePrev();
+  }
+};
+audio.addEventListener('ended',()=>{
+  if(currentMode==='playlist'&&currentIndex>=0&&currentIndex<playlist.length-1){
+    // Satsang playlist: pause for the fixed inter-track gap, then advance.
+    if(CONFIG.gapSeconds>0){
+      let left=CONFIG.gapSeconds;
+      setGapIndicator(true,left);
+      gapTimer=setInterval(()=>{
+        left--;
+        if(left<=0){ clearInterval(gapTimer); playIndex(currentIndex+1); }
+        else setGapIndicator(true,left);
+      },1000);
+    }else playIndex(currentIndex+1);
+  }else if(currentMode==='library'&&libQueueIndex>=0
+           &&libQueueIndex<libQueue.length-1){
+    // Library queue: advance straight to the next shabad, no gap.
+    libQueueNext();
+  }else{
+    // End of playlist, end of library queue, or a 'single' track:
+    // nothing more to play. Pick One stops here by design.
+    updatePlayerUI(); renderPlaylist();
+  }
+});
+audio.addEventListener('timeupdate',()=>{
+  if(seekDragging) return;   // don't fight the user's drag
+  const c=audio.currentTime,d=audio.duration||0;
+  document.getElementById('curTime').textContent=fmt(c);
+  document.getElementById('totTime').textContent=fmt(d);
+  document.getElementById('seekFill').style.width=d?(c/d*100)+'%':'0%';
+  updateSatsangProgress();
+});
+audio.addEventListener('play',()=>updatePlayerUI());
+audio.addEventListener('pause',()=>updatePlayerUI());
+audio.addEventListener('error',()=>{
+  if(currentMode==='playlist'&&currentIndex>=0&&playlist[currentIndex]){
+    playlist[currentIndex]._missing=true; renderPlaylist();
+  }
+});
+
+/* ---------- Seek bar — click and drag ---------- */
+let seekDragging=false;
+const seekEl=document.getElementById('seek');
+function seekToClientX(clientX){
+  if(!audio.duration) return;
+  const r=seekEl.getBoundingClientRect();
+  let frac=(clientX-r.left)/r.width;
+  frac=Math.max(0,Math.min(1,frac));
+  // While dragging, move the fill live; commit the time on release.
+  document.getElementById('seekFill').style.width=(frac*100)+'%';
+  document.getElementById('curTime').textContent=fmt(frac*audio.duration);
+  return frac;
+}
+seekEl.addEventListener('pointerdown',e=>{
+  if(!audio.duration||!isFinite(audio.duration)) return;
+  seekDragging=true;
+  seekEl.classList.add('dragging');
+  try{ seekEl.setPointerCapture(e.pointerId); }catch(err){}
+  seekToClientX(e.clientX);
+});
+seekEl.addEventListener('pointermove',e=>{
+  if(!seekDragging) return;
+  seekToClientX(e.clientX);
+});
+seekEl.addEventListener('pointerup',e=>{
+  if(!seekDragging) return;
+  seekDragging=false;
+  seekEl.classList.remove('dragging');
+  const frac=seekToClientX(e.clientX);
+  if(typeof frac!=='number') return;
+  const dur=audio.duration;
+  if(!dur||!isFinite(dur)) return;
+  let target=Math.max(0,Math.min(frac*dur,dur-0.3));
+  doSeek(target);
+});
+/* Robustly move playback to `target` seconds. Assigning currentTime
+   can be ignored when audio runs through the Web Audio graph, so we
+   confirm with the 'seeked' event and, if it didn't take, retry by
+   briefly nudging the element. */
+function doSeek(target){
+  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
+  const wasPlaying=!audio.paused;
+  let confirmed=false;
+  const onSeeked=()=>{ confirmed=true; };
+  audio.addEventListener('seeked',onSeeked,{once:true});
+  // First attempt.
+  try{ audio.currentTime=target; }catch(err){}
+  // Check shortly after; if currentTime didn't land near target, retry.
+  setTimeout(()=>{
+    if(confirmed) return;
+    if(Math.abs(audio.currentTime-target)>1.5){
+      // Retry: pause, set, then resume — this forces the seek through.
+      try{
+        audio.pause();
+        audio.currentTime=target;
+        if(wasPlaying) audio.play().catch(()=>{});
+      }catch(err){}
+    }
+    // Sync the bar to wherever we actually landed.
+    const d=audio.duration||0;
+    if(d) document.getElementById('seekFill').style.width=
+      (audio.currentTime/d*100)+'%';
+  },180);
+}
+seekEl.addEventListener('pointercancel',()=>{
+  seekDragging=false;
+  seekEl.classList.remove('dragging');
+});
+
+/* ---------- Volume slider ---------- */
+document.getElementById('volSlider').addEventListener('input',e=>{
+  // Dragging the slider cancels the muted state.
+  isMuted=false;
+  setMasterVolume(parseInt(e.target.value));
+  updateVolumeIcon();
+});
+document.getElementById('muteBtn').addEventListener('click',toggleMute);
+updateVolumeIcon();
+
+/* ---------- Events ---------- */
+document.getElementById('durations').addEventListener('click',e=>{
+  const b=e.target.closest('.dur-btn');
+  if(!b) return;
+  document.querySelectorAll('.dur-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  if(b.dataset.mins==='custom'){
+    document.getElementById('customRow').style.display='flex';
+    targetMinutes=parseInt(document.getElementById('customMins').value)||75;
+  }else{
+    document.getElementById('customRow').style.display='none';
+    targetMinutes=parseInt(b.dataset.mins);
+  }
+  // renderPlaylist too, so the gap slot appears/updates for the new budget.
+  updateBudget(); updateSatsangProgress(); renderPlaylist();
+});
+document.getElementById('customMins').addEventListener('input',e=>{
+  targetMinutes=parseInt(e.target.value)||0;
+  updateBudget(); renderPlaylist();
+});
+document.getElementById('search').addEventListener('input',renderLibrary);
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active'); libFilter=c.dataset.filter; renderLibrary();
+  });
+});
+document.getElementById('libraryList').addEventListener('click',e=>{
+  // The + button is separate — handle it first and stop.
+  const ab=e.target.closest('.add-btn');
+  if(ab){ addTrack(parseInt(ab.dataset.id)); return; }
+  // Otherwise, tapping anywhere on the row plays it.
+  const row=e.target.closest('.track');
+  if(row&&row.dataset.id){
+    const id=parseInt(row.dataset.id);
+    if(nowPlaying&&nowPlaying.id===id){
+      if(audio.paused) audio.play(); else audio.pause();
+      updatePlayerUI(); return;
+    }
+    // Start the library queue from this track, so the footer
+    // Next/Prev buttons step through the library from here.
+    playLibraryTrack(id);
+  }
+});
+document.getElementById('extrasList').addEventListener('click',e=>{
+  const row=e.target.closest('.track');
+  if(row&&row.dataset.extra){
+    const id=parseInt(row.dataset.extra);
+    if(nowPlaying&&nowPlaying.id===id){
+      if(audio.paused) audio.play(); else audio.pause();
+      updatePlayerUI(); return;
+    }
+    playSingle(EXTRAS.find(x=>x.id===id));
+  }
+});
+document.getElementById('playlistList').addEventListener('click',e=>{
+  const ea=e.target.closest('#emptyAutoFill');
+  if(ea){ autoFill(); return; }
+  const fr=e.target.closest('#fillRemaining');
+  if(fr){ fillRemaining(); return; }
+  // The remove (x) button is separate — handle first and stop.
+  const rm=e.target.closest('.remove-btn');
+  if(rm){ removeTrack(parseInt(rm.dataset.id)); return; }
+  // Tapping anywhere else on a row plays it.
+  const row=e.target.closest('.track');
+  if(row&&row.dataset.index!==undefined){
+    const idx=parseInt(row.dataset.index);
+    const t=playlist[idx];
+    if(t&&nowPlaying&&nowPlaying.id===t.id&&currentMode==='playlist'){
+      if(audio.paused) audio.play(); else audio.pause();
+      updatePlayerUI(); return;
+    }
+    playIndex(idx);
+  }
+});
+document.getElementById('autoFill').onclick=autoFill;
+document.getElementById('clearList').onclick=()=>{
+  resetPlaylist(); renderLibrary(); toast('Playlist cleared');
+};
+/* Shabad Library header controls.
+   Play  — starts the library queue, or pauses/resumes if already on it.
+   Shuffle — a toggle; affects the order of any library queue built next,
+             and re-shuffles the rest of the current queue if one is live.
+   Pick One — plays a single random shabad and stops. */
+document.getElementById('libPlay').onclick=()=>{
+  if(currentMode==='library'&&libQueueIndex>=0){
+    // Already playing the library — this button is a play/pause toggle.
+    if(audio.paused) audio.play(); else audio.pause();
+    updatePlayerUI();
+  }else{
+    playLibraryAll();
+  }
+};
+document.getElementById('libShuffle').onclick=()=>{
+  libShuffleOn=!libShuffleOn;
+  document.getElementById('libShuffle').classList.toggle('toggled',libShuffleOn);
+  // If a library queue is already playing, reshuffle/reorder the part
+  // that hasn't played yet, keeping the current track where it is.
+  if(currentMode==='library'&&libQueueIndex>=0&&nowPlaying){
+    const cur=nowPlaying;
+    let rest=libQueue.filter((t,i)=>i!==libQueueIndex);
+    if(libShuffleOn){
+      shuffle(rest);
+    }else{
+      // Restore the natural (current view) order for the remaining tracks.
+      const order=visibleLibraryRows();
+      rest.sort((a,b)=>order.findIndex(x=>x.id===a.id)
+                       -order.findIndex(x=>x.id===b.id));
+    }
+    libQueue=[cur,...rest];
+    libQueueIndex=0;
+  }
+  toast('Shuffle '+(libShuffleOn?'on':'off'));
+};
+document.getElementById('libSurprise').onclick=pickOneShabad;
+/* ---------- Sort popup menu ---------- */
+const SORT_LABELS={
+  'default':'Default',
+  'title':'A \u2013 Z',
+  'titleDesc':'Z \u2013 A',
+  'durationAsc':'Duration: Low to High',
+  'durationDesc':'Duration: High to Low'
+};
+function refreshSortMenu(){
+  document.getElementById('sortBtnLabel').textContent=
+    SORT_LABELS[libSort]||'Default';
+  document.querySelectorAll('.sort-opt').forEach(o=>{
+    o.classList.toggle('active',o.dataset.sort===libSort);
+  });
+}
+function openSortPop(open){
+  const pop=document.getElementById('sortPop');
+  const btn=document.getElementById('sortBtn');
+  pop.hidden=!open;
+  btn.setAttribute('aria-expanded',open?'true':'false');
+}
+document.getElementById('sortBtn').addEventListener('click',e=>{
+  e.stopPropagation();
+  openSortPop(document.getElementById('sortPop').hidden);
+});
+document.getElementById('sortPop').addEventListener('click',e=>{
+  const opt=e.target.closest('.sort-opt');
+  if(!opt) return;
+  libSort=opt.dataset.sort;
+  refreshSortMenu();
+  renderLibrary();
+  openSortPop(false);
+});
+/* Close the popup when clicking anywhere else. */
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#sortMenu')) openSortPop(false);
+});
+refreshSortMenu();
+document.getElementById('levelerToggle').addEventListener('change',e=>{
+  levelerOn=e.target.checked;
+  if(currentIndex>=0&&playlist[currentIndex]) applyGainFor(playlist[currentIndex]);
+  else if(currentMode==='single') applyGainFor({gainDb:0});
+  toast('Auto Volume '+(levelerOn?'on':'off'));
+});
+
+/* ---------- Layout measurement ----------
+   The two-stage scroll depends on two exact numbers:
+   - the real height of the fixed footer player, so the columns end
+     just above it (and the last track row is never hidden behind it);
+   - the real height of the top banner, so the layout locks into place
+     only after 100% of the banner has scrolled off the screen.
+   CSS can't measure rendered elements, so we do it here and write the
+   results into the --player-h / --banner-h CSS variables. Re-runs on
+   resize and whenever the footer player's content changes height. */
+function measureLayout(){
+  const player=document.querySelector('.player');
+  const banner=document.querySelector('.banner');
+  const root=document.documentElement.style;
+  if(player){
+    // offsetHeight includes padding + border = the true footer height.
+    root.setProperty('--player-h', player.offsetHeight + 'px');
+  }
+  if(banner){
+    // Banner height plus its bottom margin = how far the page must
+    // scroll before the banner is fully gone and the layout sticks.
+    const mb=parseFloat(getComputedStyle(banner).marginBottom)||0;
+    root.setProperty('--banner-h', (banner.offsetHeight + mb) + 'px');
+  }
+}
+window.addEventListener('resize', measureLayout);
+window.addEventListener('load', measureLayout);
+// The footer player grows a little once a track loads (longer titles,
+// seek times); re-measure whenever its size changes.
+if(window.ResizeObserver){
+  const ro=new ResizeObserver(measureLayout);
+  const pl=document.querySelector('.player');
+  if(pl) ro.observe(pl);
+}
+
+/* ---------- Go ---------- */
+measureLayout();
+setBigPlayIcon(false);   // show the centred play icon before anything plays
+setupDrag();
+loadTracks();   // loadTracks also starts the slideshow
+
+/* ---------- Colour theme toggle (Rose <-> Orange) ---------- */
+function applyTheme(theme){
+  currentTheme=theme;
+  const orange=(theme==='orange');
+  document.body.classList.toggle('theme-orange',orange);
+  // swap the top banner image to match the theme
+  const bImg=document.getElementById('bannerImg');
+  if(bImg) bImg.src='banner/'+(orange?'guruji_orange.jpg':'guruji_rose.jpg');
+  // the playlist hero image: if it is currently showing a banner image
+  // (no playlist built yet), swap it to match the theme too.
+  const hImg=document.getElementById('plHeroImg');
+  if(hImg && hImg.src.indexOf('banner/')!==-1){
+    hImg.src=themeBannerImage();
+  }
+  // the toggle button shows the OTHER theme (what tapping switches to)
+  const lbl=document.getElementById('themeLabel');
+  if(lbl) lbl.textContent=orange?'Rose theme':'Orange theme';
+}
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  applyTheme(currentTheme==='rose'?'orange':'rose');
+});
+applyTheme('rose');   // rose is the default
+</script>
+</body>
+</html>
