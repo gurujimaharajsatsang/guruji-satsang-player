@@ -4,6 +4,21 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Guruji Ka Satsang Player</title>
+
+<!-- ===== Link preview (WhatsApp / Facebook) ===== -->
+<meta name="description" content="A simple seva for the sangat - prepare a duration-aware shabad playlist for satsang, with only Guruji's selected shabads." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Guruji Ka Satsang Player" />
+<meta property="og:description" content="A small seva for the sangat - prepare the satsang shabad playlist easily, with only Guruji's selected shabads. Jai Guruji." />
+<meta property="og:url" content="https://gurujimaharajsatsang.github.io/guruji-satsang-player/" />
+<meta property="og:image" content="https://gurujimaharajsatsang.github.io/guruji-satsang-player/preview.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Guruji Ka Satsang Player" />
+<meta name="twitter:description" content="A small seva for the sangat - prepare the satsang shabad playlist easily, with only Guruji's selected shabads." />
+<meta name="twitter:image" content="https://gurujimaharajsatsang.github.io/guruji-satsang-player/preview.jpg" />
+<!-- ============================================== -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -160,10 +175,88 @@
   }
   .theme-toggle:hover { background:rgba(0,0,0,0.45); }
 
+  /* ---- About button: sits just left of the theme toggle ---- */
+  .about-btn {
+    position:absolute; top:34px; right:120px; z-index:3;
+    background:rgba(0,0,0,0.28); border:1px solid rgba(255,255,255,0.35);
+    color:#fff; font-family:'Karla',sans-serif; font-size:11px;
+    font-weight:700; padding:5px 12px; border-radius:99px;
+    cursor:pointer; transition:all 0.15s ease; backdrop-filter:blur(4px);
+  }
+  .about-btn:hover { background:rgba(0,0,0,0.45); }
+
+  /* ---- About overlay (modal) ---- */
+  .about-overlay {
+    display:none; position:fixed; inset:0; z-index:200;
+    background:rgba(0,0,0,0.66); backdrop-filter:blur(3px);
+    padding:24px; overflow-y:auto;
+  }
+  .about-overlay.open { display:flex; align-items:flex-start;
+    justify-content:center; }
+  .about-box {
+    background:var(--panel); border:1px solid var(--line-2);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    max-width:620px; width:100%; margin:auto;
+    padding:0; overflow:hidden;
+  }
+  .about-head {
+    background:var(--banner-grad); padding:22px 26px 20px;
+    position:relative;
+  }
+  .about-head h2 {
+    font-family:'Fraunces',serif; font-size:24px; font-weight:600;
+    color:var(--hi); margin:0;
+  }
+  body.theme-orange .about-head h2 { color:#5a3410; }
+  .about-head .about-kicker {
+    font-size:11px; font-weight:700; letter-spacing:2px;
+    text-transform:uppercase; color:var(--hi); opacity:0.85;
+    margin-bottom:4px;
+  }
+  body.theme-orange .about-head .about-kicker { color:#6b3f12; }
+  .about-close {
+    position:absolute; top:16px; right:16px;
+    width:30px; height:30px; border-radius:50%;
+    background:rgba(0,0,0,0.32); border:1px solid rgba(255,255,255,0.4);
+    color:#fff; font-size:16px; line-height:1; cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .about-close:hover { background:rgba(0,0,0,0.55); }
+  .about-body { padding:22px 26px 26px; }
+  .about-body h3 {
+    font-family:'Fraunces',serif; font-size:17px; font-weight:600;
+    color:var(--rose-soft); margin:18px 0 8px;
+  }
+  .about-body h3:first-child { margin-top:0; }
+  .about-body p { color:var(--ink-soft); font-size:14px; margin:0 0 10px; }
+  .about-body ul { list-style:none; margin:0 0 10px; padding:0; }
+  .about-body ul li {
+    color:var(--ink-soft); font-size:14px; padding:6px 0 6px 22px;
+    position:relative; border-bottom:1px solid var(--line);
+  }
+  .about-body ul li:last-child { border-bottom:none; }
+  .about-body ul li::before {
+    content:""; position:absolute; left:4px; top:13px;
+    width:7px; height:7px; border-radius:50%; background:var(--rose);
+  }
+  .about-body ul li b { color:var(--ink); font-weight:700; }
+  .about-body ol { margin:0 0 10px; padding-left:20px; }
+  .about-body ol li {
+    color:var(--ink-soft); font-size:14px; margin-bottom:6px;
+  }
+  .about-body ol li b { color:var(--ink); font-weight:700; }
+  .about-foot {
+    margin-top:16px; padding-top:14px; border-top:1px solid var(--line-2);
+    text-align:center; font-family:'Fraunces',serif; font-style:italic;
+    color:var(--rose-soft); font-size:14px;
+  }
+
   @media (max-width:560px){
     .banner-inner { gap:16px; padding:18px; }
     .banner-portrait { width:140px; height:140px; }
     .banner-title { text-align:center; }
+    .about-btn { right:104px; }
+    .about-box { max-width:100%; }
   }
 
   /* ---- Layout: 2:1 two columns. Playlist fills the left;
@@ -699,20 +792,22 @@
   .seek:hover .seek-knob,
   .seek.dragging .seek-knob { transform:translateY(-50%) scale(1); }
   .seek.dragging { cursor:grabbing; }
-  /* Footer satsang-progress strip — sits beside the track seek bar,
-     only visible while the satsang playlist itself is playing. */
+  /* Satsang-progress strip — sits at the right end of the playlist
+     controls row, only visible while the satsang playlist is playing.
+     It grows to fill the row so the bar reaches toward the middle. */
   .footer-satsang {
-    display:none; align-items:center; gap:8px; flex-shrink:0;
-    padding-left:12px; margin-left:2px;
-    border-left:1px solid var(--line-2);
+    display:none; align-items:center; gap:9px; flex-shrink:0;
+    margin-left:auto; flex:1 1 auto; min-width:0;
+    max-width:360px;
   }
   .footer-satsang.show { display:flex; }
   .fs-label {
     font-size:10px; text-transform:uppercase; letter-spacing:0.08em;
-    color:var(--ink-mute); font-weight:700;
+    color:var(--ink-mute); font-weight:700; flex-shrink:0;
   }
   .fs-track {
-    width:90px; height:5px; background:var(--bg); border-radius:99px;
+    flex:1 1 auto; min-width:80px; height:5px;
+    background:var(--bg); border-radius:99px;
     overflow:hidden; border:1px solid var(--line);
   }
   .fs-fill {
@@ -721,7 +816,7 @@
   }
   .fs-text {
     font-size:11px; color:var(--ink-mute);
-    font-variant-numeric:tabular-nums; white-space:nowrap;
+    font-variant-numeric:tabular-nums; white-space:nowrap; flex-shrink:0;
   }
   .player-right {
     width:200px; flex-shrink:0; display:flex; flex-direction:column;
@@ -760,8 +855,6 @@
     .np-text { display:none; }
     .player-right { width:auto; }
     .vol-slider { width:70px; }
-    /* Too little room for the satsang strip on a phone-width player. */
-    .footer-satsang.show { display:none; }
   }
 </style>
 </head>
@@ -787,11 +880,132 @@
     <div class="offline-dot" id="offlineDot">
       <span class="d"></span><span id="offlineText">Loading...</span>
     </div>
+    <button class="about-btn" id="aboutBtn"
+            title="About this player">
+      &#8505; About
+    </button>
     <button class="theme-toggle" id="themeToggle"
             title="Switch colour theme">
       <span id="themeLabel">Orange theme</span>
     </button>
   </div>
+
+  <!-- ====================  ABOUT PANEL  ==================== -->
+  <div class="about-overlay" id="aboutOverlay">
+    <div class="about-box" role="dialog" aria-modal="true"
+         aria-label="About the Satsang Player">
+      <div class="about-head">
+        <div class="about-kicker">Jai Guruji</div>
+        <h2>About the Satsang Player</h2>
+        <button class="about-close" id="aboutClose"
+                title="Close" aria-label="Close">&#10005;</button>
+      </div>
+      <div class="about-body">
+
+        <h3>What this is</h3>
+        <p>The Guruji Ka Satsang Player is a simple web page, offered
+           humbly as seva, to help prepare the shabad playlist for
+           satsang. It is the maryada of our satsang that only shabads
+           are played &mdash; and only those that Guruji had selected
+           and played. This player makes preparing such a satsang
+           effortless.</p>
+
+        <h3>Why it was made</h3>
+        <p>Often, in the last hour before satsang, there is a hurry to
+           arrange the playlist, and whatever is found online is played
+           &mdash; sometimes with advertisements interrupting those
+           sacred moments. This player was made so the sangat no longer
+           has to scramble, and so the satsang stays pure: only Guruji's
+           chosen shabads, playing from beginning to end without a
+           single interruption.</p>
+
+        <h3>Features</h3>
+        <ul>
+          <li><b>Duration-aware Auto-Fill</b> &mdash; choose how long
+              the satsang is (1 hour, 2 hours, or your own custom time)
+              and the player fills a suitable playlist of shabads to fit.</li>
+          <li><b>Ek Onkar is set automatically</b> &mdash; every satsang
+              playlist opens with Ek Onkar, as it should.</li>
+          <li><b>Mantra Jaap is set automatically</b> &mdash; the
+              playlist closes with the Mantra Jaap, so the satsang ends
+              the proper way without you arranging it.</li>
+          <li><b>Aarti kept separate</b> &mdash; the Aarti is not mixed
+              into the playlist. When the satsang reaches that point,
+              you simply play the Aarti when ready &mdash; no need to
+              pause or interrupt the player.</li>
+          <li><b>Shabad Library</b> &mdash; the full collection of
+              Guruji's selected shabads, searchable, ready to add to
+              the satsang playlist or reorder as needed.</li>
+          <li><b>Even, balanced volume</b> &mdash; the player evens out
+              the loudness across shabads, so no track plays suddenly
+              louder or softer than another.</li>
+          <li><b>No ads, no interruptions</b> &mdash; the satsang plays
+              smoothly from start to finish.</li>
+          <li><b>Photo slideshow of Guruji</b> &mdash; a gentle
+              slideshow of Guruji's swaroop plays while the shabads
+              are heard.</li>
+          <li><b>Drag to reorder</b> &mdash; arrange the playlist just
+              as you wish by dragging shabads into order.</li>
+          <li><b>Shuffle &amp; Pick One</b> &mdash; play the library
+              shabads in a random order, or let Pick One choose a
+              single shabad for you.</li>
+          <li><b>Works as a standalone shabad player</b> &mdash; play
+              shabads from the library anytime, with or without
+              building a satsang playlist.</li>
+          <li><b>Two colour themes</b> &mdash; a rose theme and an
+              orange theme; tap the theme button to switch.</li>
+        </ul>
+
+        <h3>How to use it</h3>
+
+        <p><b>Preparing a Satsang Playlist</b></p>
+        <ol>
+          <li><b>Set the duration</b> &mdash; choose 1 Hour, 2 Hours,
+              or Custom for the length of your satsang.</li>
+          <li><b>Tap Auto-Fill</b> &mdash; the player builds a complete
+              playlist of shabads to fit that time, with Ek Onkar at
+              the start and Mantra Jaap at the end.</li>
+          <li><b>Adjust if you wish</b> &mdash; search the Shabad
+              Library to add particular shabads, and drag shabads to
+              reorder them.</li>
+          <li><b>Press play</b> &mdash; the satsang plays through
+              smoothly on its own.</li>
+          <li><b>For the Aarti</b> &mdash; when the satsang reaches
+              the Aarti, simply play it from the Aarti section when
+              you are ready.</li>
+        </ol>
+
+        <p><b>Using the Shabad Library</b></p>
+        <p>The Shabad Library also works on its own as a standalone
+           shabad player &mdash; you do not need to build a satsang
+           playlist to simply listen to shabads.</p>
+        <ul>
+          <li><b>Search</b> the library for any shabad and play it
+              directly.</li>
+          <li><b>Add to the satsang</b> &mdash; send any shabad from
+              the library into the Satsang Playlist.</li>
+          <li><b>Shuffle</b> &mdash; turn Shuffle on to play the
+              shabads of the library in a random order.</li>
+          <li><b>Pick One</b> &mdash; plays a single shabad chosen at
+              random, then stops. A gentle way to hear just one shabad.</li>
+        </ul>
+        <p>Playing a shabad from the library does not begin the
+           satsang &mdash; the satsang starts only when you press play
+           on the Satsang Playlist itself.</p>
+
+        <h3>About this collection</h3>
+        <p>This is the first version of the shabad collection. With
+           Guruji's blessings, it will be updated with further sets of
+           shabads in time.</p>
+
+        <div class="about-foot">
+          May it be of some use in Guruji's seva. Jai Guruji
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- ==================  END ABOUT PANEL  ================== -->
 
   <div class="layout">
 
@@ -826,6 +1040,11 @@
               &#10022; Auto-Fill</button>
             <button class="pl-ctrl-ghost" id="clearList" title="Clear the playlist">
               Clear</button>
+            <div class="footer-satsang" id="footerSatsang">
+              <span class="fs-label">Satsang</span>
+              <div class="fs-track"><div class="fs-fill" id="fsFill"></div></div>
+              <span class="fs-text" id="fsText">--</span>
+            </div>
           </div>
           <!-- Compact budget strip: stays pinned so the user always sees
                how full the playlist is without scrolling up. -->
@@ -972,11 +1191,6 @@
         <span class="time" id="curTime">0:00</span>
         <div class="seek" id="seek"><div class="seek-fill" id="seekFill"><div class="seek-knob"></div></div></div>
         <span class="time" id="totTime">0:00</span>
-        <div class="footer-satsang" id="footerSatsang">
-          <span class="fs-label">Satsang</span>
-          <div class="fs-track"><div class="fs-fill" id="fsFill"></div></div>
-          <span class="fs-text" id="fsText">--</span>
-        </div>
       </div>
     </div>
     <div class="player-right">
@@ -1820,9 +2034,13 @@ function updatePlayerUI(){
     setBigPlayIcon(false);
   }
   updateLibHeaderButton();
-  // Swaroop caption: "in progress" while playing, else "preparing".
+  // Swaroop caption: "Satsang in progress" ONLY while the Satsang
+  // Playlist itself is playing. Playing a shabad from the Library
+  // (library or single mode) does not start the satsang, so the
+  // caption stays "Preparing for satsang".
   if(swStatus){
-    swStatus.textContent=playing?'Satsang in progress':'Preparing for satsang';
+    const satsangPlaying = playing && currentMode==='playlist';
+    swStatus.textContent=satsangPlaying?'Satsang in progress':'Preparing for satsang';
   }
   // Refresh list highlighting so the playing row shows everywhere.
   renderLibrary(); renderExtras();
@@ -2202,6 +2420,25 @@ document.getElementById('themeToggle').addEventListener('click',()=>{
   applyTheme(currentTheme==='rose'?'orange':'rose');
 });
 applyTheme('rose');   // rose is the default
+
+/* ---------- About panel open / close ---------- */
+(function(){
+  const overlay = document.getElementById('aboutOverlay');
+  const openBtn = document.getElementById('aboutBtn');
+  const closeBtn = document.getElementById('aboutClose');
+  function openAbout(){ overlay.classList.add('open'); }
+  function closeAbout(){ overlay.classList.remove('open'); }
+  if(openBtn)  openBtn.addEventListener('click', openAbout);
+  if(closeBtn) closeBtn.addEventListener('click', closeAbout);
+  // click on the dark area outside the box also closes it
+  if(overlay) overlay.addEventListener('click', function(e){
+    if(e.target === overlay) closeAbout();
+  });
+  // Esc key closes it
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeAbout();
+  });
+})();
 </script>
 </body>
 </html>
