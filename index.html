@@ -252,11 +252,21 @@
   }
 
   @media (max-width:560px){
-    .banner-inner { gap:16px; padding:18px; }
+    .banner-inner { gap:16px; padding:18px 18px 58px; }
     .banner-portrait { width:140px; height:140px; }
     .banner-title { text-align:center; }
-    .about-btn { right:104px; }
     .about-box { max-width:100%; }
+    /* On mobile the banner content centres, so the photo and text
+       fill the top and middle. Move the two buttons to the BOTTOM
+       corners of the banner, so nothing sits over the centre. The
+       small "Library ready" dot stays in the top-right corner -- it
+       is tiny and never overlaps the centred photo. */
+    .about-btn {
+      left:14px; right:auto; top:auto; bottom:12px;
+    }
+    .theme-toggle {
+      left:auto; right:14px; top:auto; bottom:12px;
+    }
   }
 
   /* ---- Layout: 2:1 two columns. Playlist fills the left;
