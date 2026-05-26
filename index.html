@@ -866,9 +866,153 @@
     .player-right { width:auto; }
     .vol-slider { width:70px; }
   }
+
+  /* ===== FEEDBACK FEATURE ===== */
+  .fb-fab {
+    position:fixed; top:14px; right:14px; z-index:900;
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'Fraunces',serif; font-weight:600; font-size:13px;
+    color:#fff; cursor:pointer;
+    background:linear-gradient(180deg,var(--rose),var(--rose-deep));
+    border:1px solid var(--rose-soft); border-radius:999px;
+    padding:8px 14px;
+    box-shadow:0 8px 22px -10px rgba(0,0,0,0.7);
+    transition:transform .12s ease, filter .18s ease;
+  }
+  .fb-fab:hover { filter:brightness(1.07); }
+  .fb-fab:active { transform:translateY(1px); }
+
+  .fb-overlay {
+    position:fixed; inset:0; z-index:1000;
+    display:none; align-items:center; justify-content:center;
+    background:rgba(0,0,0,0.62); padding:20px;
+    -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+  }
+  .fb-overlay.open { display:flex; }
+
+  .fb-modal {
+    width:100%; max-width:440px;
+    background:var(--panel); color:var(--ink);
+    border:1px solid var(--line-2); border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:26px 24px 22px; position:relative;
+    animation:fbRise .28s ease;
+  }
+  @keyframes fbRise { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+
+  .fb-close {
+    position:absolute; top:12px; right:14px;
+    background:none; border:none; color:var(--ink-mute);
+    font-size:22px; cursor:pointer; line-height:1;
+  }
+  .fb-close:hover { color:var(--ink); }
+
+  .fb-title {
+    font-family:'Fraunces',serif; font-weight:600; font-size:21px;
+    margin:0 0 4px;
+  }
+  .fb-sub { color:var(--ink-soft); font-size:13px; margin:0 0 18px; line-height:1.5; }
+
+  .fb-field { margin-bottom:14px; }
+  .fb-field label {
+    display:block; font-size:12px; font-weight:600;
+    color:var(--ink-soft); margin-bottom:6px;
+  }
+  .fb-field label .fb-req { color:var(--rose-soft); }
+  .fb-field input, .fb-field textarea {
+    width:100%; box-sizing:border-box;
+    font-family:'Karla',sans-serif; font-size:14px;
+    color:var(--ink); background:var(--bg-soft);
+    border:1px solid var(--line-2); border-radius:10px;
+    padding:10px 12px; transition:border-color .16s ease, box-shadow .16s ease;
+  }
+  .fb-field input::placeholder, .fb-field textarea::placeholder { color:var(--ink-mute); }
+  .fb-field input:focus, .fb-field textarea:focus {
+    outline:none; border-color:var(--rose);
+    box-shadow:0 0 0 3px rgba(217,138,153,0.22);
+  }
+  .fb-field textarea { resize:vertical; min-height:108px; line-height:1.5; }
+  .fb-field input.fb-invalid, .fb-field textarea.fb-invalid { border-color:#cc6a5c; }
+  .fb-err { display:none; color:#e0857a; font-size:11.5px; margin-top:5px; }
+  .fb-err.show { display:block; }
+
+  .fb-captcha { margin:4px 0 14px; }
+
+  .fb-submit {
+    width:100%; font-family:'Fraunces',serif; font-weight:600; font-size:15px;
+    color:#fff; cursor:pointer;
+    background:linear-gradient(180deg,var(--rose),var(--rose-deep));
+    border:none; border-radius:10px; padding:11px;
+    box-shadow:0 8px 20px -10px rgba(0,0,0,0.6);
+    transition:filter .16s ease, transform .12s ease;
+  }
+  .fb-submit:hover { filter:brightness(1.07); }
+  .fb-submit:active { transform:translateY(1px); }
+  .fb-submit:disabled { opacity:.55; cursor:default; filter:none; }
+
+  .fb-status { font-size:13px; margin-top:12px; text-align:center; display:none; }
+  .fb-status.show { display:block; }
+  .fb-status.err { color:#e0857a; }
+
+  .fb-thanks { display:none; text-align:center; padding:6px 0; }
+  .fb-thanks.show { display:block; }
+  .fb-thanks .fb-mark {
+    width:52px; height:52px; border-radius:50%;
+    background:var(--panel-3); color:var(--rose-soft);
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px; margin:0 auto 12px;
+  }
+  .fb-thanks p { color:var(--ink-soft); font-size:13.5px; line-height:1.55; margin:0; }
+
+  /* honeypot: hidden from real users */
+  .fb-hp { position:absolute; left:-9999px; opacity:0; height:0; width:0; }
 </style>
 </head>
 <body>
+
+<!-- ===== FEEDBACK FEATURE ===== -->
+<button class="fb-fab" id="fbOpen" title="Share your feedback">&#10047; Feedback</button>
+
+<div class="fb-overlay" id="fbOverlay">
+  <div class="fb-modal" role="dialog" aria-modal="true" aria-labelledby="fbTitle">
+    <button class="fb-close" id="fbClose" title="Close" aria-label="Close">&times;</button>
+
+    <div id="fbFormView">
+      <h2 class="fb-title" id="fbTitle">Share your feedback</h2>
+      <p class="fb-sub">A small seva for the sangat &mdash; tell us what could be better, or what you'd like to see.</p>
+
+      <div class="fb-field">
+        <label for="fbName">Your name <span class="fb-req">*</span></label>
+        <input type="text" id="fbName" name="name" autocomplete="name" placeholder="How may we address you?" />
+        <p class="fb-err" id="fbNameErr">Please enter your name.</p>
+      </div>
+
+      <div class="fb-field">
+        <label for="fbMessage">Your feedback <span class="fb-req">*</span></label>
+        <textarea id="fbMessage" name="message" maxlength="2000" placeholder="Share suggestions, concerns, or anything you'd like us to know..."></textarea>
+        <p class="fb-err" id="fbMsgErr">Please share a little more before sending.</p>
+      </div>
+
+      <!-- honeypot anti-spam field; bots fill it, humans never see it -->
+      <input type="checkbox" name="botcheck" class="fb-hp" tabindex="-1" autocomplete="off" />
+
+      <div class="fb-captcha">
+        <div class="h-captcha" data-captcha="true"></div>
+      </div>
+
+      <button class="fb-submit" id="fbSubmit">Send feedback</button>
+      <p class="fb-status err" id="fbStatus"></p>
+    </div>
+
+    <div class="fb-thanks" id="fbThanks">
+      <div class="fb-mark">&#10003;</div>
+      <h2 class="fb-title">Thank you</h2>
+      <p>Your feedback has reached us. We are grateful you took the time to help improve this seva.</p>
+    </div>
+  </div>
+</div>
+<!-- web3forms captcha script -->
+<script src="https://web3forms.com/client/script.js" async defer></script>
 <div class="app">
 
   <div class="banner">
@@ -2447,6 +2591,106 @@ applyTheme('rose');   // rose is the default
   // Esc key closes it
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape') closeAbout();
+  });
+})();
+
+/* ===== FEEDBACK FEATURE ===== */
+(function(){
+  var ACCESS_KEY = "2067e236-e22e-4683-97b0-8b499bf2b328";
+
+  var fab     = document.getElementById('fbOpen');
+  var overlay = document.getElementById('fbOverlay');
+  var closeBt = document.getElementById('fbClose');
+  var formView= document.getElementById('fbFormView');
+  var thanks  = document.getElementById('fbThanks');
+  var nameEl  = document.getElementById('fbName');
+  var msgEl   = document.getElementById('fbMessage');
+  var submit  = document.getElementById('fbSubmit');
+  var status  = document.getElementById('fbStatus');
+
+  function openModal(){
+    formView.style.display = 'block';
+    thanks.classList.remove('show');
+    status.classList.remove('show');
+    overlay.classList.add('open');
+  }
+  function closeModal(){ overlay.classList.remove('open'); }
+
+  fab.addEventListener('click', openModal);
+  closeBt.addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e){
+    if(e.target === overlay) closeModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+  });
+
+  function setErr(el, errId, show){
+    document.getElementById(errId).classList.toggle('show', show);
+    el.classList.toggle('fb-invalid', show);
+  }
+
+  submit.addEventListener('click', function(){
+    var name = nameEl.value.trim();
+    var message = msgEl.value.trim();
+
+    var nameBad = name.length === 0;
+    var msgBad  = message.length < 5;
+    setErr(nameEl, 'fbNameErr', nameBad);
+    setErr(msgEl,  'fbMsgErr',  msgBad);
+    if(nameBad){ nameEl.focus(); return; }
+    if(msgBad){ msgEl.focus(); return; }
+
+    // honeypot: if filled, silently abort (bot)
+    var hp = document.querySelector('.fb-hp');
+    if(hp && hp.checked) return;
+
+    // captcha check
+    var captchaField = document.querySelector('textarea[name="h-captcha-response"]');
+    var captchaToken = captchaField ? captchaField.value : '';
+    if(!captchaToken){
+      status.textContent = 'Please complete the captcha above.';
+      status.classList.add('show');
+      return;
+    }
+
+    status.classList.remove('show');
+    submit.disabled = true;
+    submit.textContent = 'Sending...';
+
+    var payload = {
+      access_key: ACCESS_KEY,
+      subject: 'Satsang Player Feedback from ' + name,
+      from_name: name,
+      name: name,
+      message: message,
+      'h-captcha-response': captchaToken
+    };
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      if(data && data.success){
+        formView.style.display = 'none';
+        thanks.classList.add('show');
+        nameEl.value = ''; msgEl.value = '';
+      } else {
+        throw new Error((data && data.message) || 'Submission failed');
+      }
+    })
+    .catch(function(){
+      status.textContent = 'Something went wrong. Please try again in a moment.';
+      status.classList.add('show');
+    })
+    .finally(function(){
+      submit.disabled = false;
+      submit.textContent = 'Send feedback';
+      if(window.hcaptcha){ try{ window.hcaptcha.reset(); }catch(e){} }
+    });
   });
 })();
 </script>
