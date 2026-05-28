@@ -1,6 +1,6 @@
 {
   "generatedBy": "build_tracks.py v4",
-  "trackCount": 138,
+  "trackCount": 170,
   "targetLufs": -16.0,
   "slideshow": [
     "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop Main/4870179.jpg",
@@ -183,6 +183,23 @@
     },
     {
       "id": 11,
+      "title": "03 Amrit Bani Har Har Teri",
+      "artist": "Bhai Joginder Singh Riar",
+      "category": "Shabad",
+      "filename": "03 Amrit Bani Har Har Teri - Joginder Singh Riar.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/03 Amrit Bani Har Har Teri - Joginder Singh Riar.mp3",
+      "durationSeconds": 663,
+      "duration": "11:03",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/03 Amrit Bani Har Har Teri - Joginder Singh Riar.jpg"
+    },
+    {
+      "id": 12,
       "title": "03 Apne Sewak Ki",
       "artist": "03 Apne Sewak Ki",
       "category": "Shabad",
@@ -199,7 +216,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/03 Apne Sewak Ki.jpg"
     },
     {
-      "id": 12,
+      "id": 13,
       "title": "03 Bande Bandgi Ikhtiyaar",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -216,7 +233,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/03 Bande Bandgi Ikhtiyaar - Harbans Singh.jpg"
     },
     {
-      "id": 13,
+      "id": 14,
+      "title": "04 Apne Sewak Kau Kabau Na Bisaro",
+      "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "04 Apne Sewak Kau Kabau Na Bisaro - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/04 Apne Sewak Kau Kabau Na Bisaro - Harjinder Singh.mp3",
+      "durationSeconds": 517,
+      "duration": "8:37",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/04 Apne Sewak Kau Kabau Na Bisaro - Harjinder Singh.jpg"
+    },
+    {
+      "id": 15,
       "title": "04 Baba Nanak Dukhla",
       "artist": "Kishanpal Singh",
       "category": "Shabad",
@@ -233,7 +267,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/04 Baba Nanak Dukhla - Kishanpal Singh.jpg"
     },
     {
-      "id": 14,
+      "id": 16,
       "title": "04 Bibi Bhani Di Mang - Part 1",
       "artist": "Bhai Sadhu Singh",
       "category": "Shabad",
@@ -250,7 +284,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/04 Bibi Bhani 1 - Sadhu Singh.jpg"
     },
     {
-      "id": 15,
+      "id": 17,
+      "title": "05 Att Sunder Manmohan Pyare",
+      "artist": "Bhai Ravinder Singh",
+      "category": "Shabad",
+      "filename": "05 Att Sunder Manmohan - Ravinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/05 Att Sunder Manmohan - Ravinder Singh.mp3",
+      "durationSeconds": 625,
+      "duration": "10:25",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/05 Att Sunder Manmohan - Ravinder Singh.jpg"
+    },
+    {
+      "id": 18,
       "title": "05 Bhikhari Se Raj Karaye",
       "artist": "05 Bhikhari Se Raj Karaye",
       "category": "Shabad",
@@ -267,7 +318,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/05 Bhikhari Se Raj Karaye.jpg"
     },
     {
-      "id": 16,
+      "id": 19,
       "title": "05 Bibi Bhani Di Mang - Part 2",
       "artist": "Bhai Sadhu Singh",
       "category": "Shabad",
@@ -284,7 +335,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/05 Bibi Bhani 2 - Sadhu Singh.jpg"
     },
     {
-      "id": 17,
+      "id": 20,
+      "title": "06 Aukaat Wich Rakhi",
+      "artist": "06 Aukaat Wich Rakhi",
+      "category": "Shabad",
+      "filename": "06 Aukaat Wich Rakhi.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/06 Aukaat Wich Rakhi.mp3",
+      "durationSeconds": 586,
+      "duration": "9:46",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/06 Aukaat Wich Rakhi.jpg"
+    },
+    {
+      "id": 21,
       "title": "06 Bin Bhaagan Satsang Na Labbey",
       "artist": "Surinder Singh Jodhpuri",
       "category": "Shabad",
@@ -301,7 +369,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/06 Bin Bhaagan Satsang Na Labbey - Surinder S Jodhpuri.jpg"
     },
     {
-      "id": 18,
+      "id": 22,
       "title": "06 Charna Di Mauj Badi",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -318,7 +386,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/06 Charna Di Mauj Badi  - Harbans Singh.jpg"
     },
     {
-      "id": 19,
+      "id": 23,
+      "title": "07 Aukhi Ghadi",
+      "artist": "Bhai Ravinder Singh",
+      "category": "Shabad",
+      "filename": "07 Aukhi Ghadi - Ravinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/07 Aukhi Ghadi - Ravinder Singh.mp3",
+      "durationSeconds": 430,
+      "duration": "7:10",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/07 Aukhi Ghadi - Ravinder Singh.jpg"
+    },
+    {
+      "id": 24,
       "title": "07 Chaupai Sahib",
       "artist": "Bhai Harjinder Singh",
       "category": "Shabad",
@@ -335,7 +420,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/07 Chaupai Sahib - Harjinder Singh.jpg"
     },
     {
-      "id": 20,
+      "id": 25,
       "title": "07 Deh Naam Santokhiya",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -352,7 +437,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/07 Deh Naam Santokhiya - Harbans Singh.jpg"
     },
     {
-      "id": 21,
+      "id": 26,
       "title": "08 Baani Guru Guru Hai Bani",
       "artist": "Sant Anoop Singh Una Sahib Wale",
       "category": "Shabad",
@@ -369,7 +454,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/08 Baani Guru Guru Hai Bani - Anoop Singh.jpg"
     },
     {
-      "id": 22,
+      "id": 27,
       "title": "08 Deh Shiva Bar",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -386,7 +471,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/08 Deh Shiva Bar Mohe - Harbans Singh.jpg"
     },
     {
-      "id": 23,
+      "id": 28,
       "title": "08 Fareedaa Je Tu Akal Lateef",
       "artist": "Bhai Davinder Singh Sodhi",
       "category": "Shabad",
@@ -403,7 +488,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/08 Fareedaa Je Tu Akal Lateef - Davinder Singh Sodhi.jpg"
     },
     {
-      "id": 24,
+      "id": 29,
+      "title": "09 Baba Bikh Dekhia Sansar",
+      "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "09 Baba Bikh Dekhia Sansar - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/09 Baba Bikh Dekhia Sansar - Harjinder Singh.mp3",
+      "durationSeconds": 473,
+      "duration": "7:53",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/09 Baba Bikh Dekhia Sansar - Harjinder Singh.jpg"
+    },
+    {
+      "id": 30,
       "title": "09 Gopal Tera Aarta",
       "artist": "Bhai Balwinder Singh Rangila",
       "category": "Shabad",
@@ -420,7 +522,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/09 Gopal Tera Aarta - Balwinder Singh Rangila.jpg"
     },
     {
-      "id": 25,
+      "id": 31,
       "title": "09 Gur Ji Kay Darshan",
       "artist": "Bhai Satvinder Singh",
       "category": "Shabad",
@@ -437,7 +539,41 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/09 Gur Ji Kay Darshan - Satvinder Singh.jpg"
     },
     {
-      "id": 26,
+      "id": 32,
+      "title": "10 Aise Gur Ko Balbal Jaiye",
+      "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "10 Aise Gur Ko Balbal Jaiye - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/10 Aise Gur Ko Balbal Jaiye - Harjinder Singh.mp3",
+      "durationSeconds": 477,
+      "duration": "7:57",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/10 Aise Gur Ko Balbal Jaiye - Harjinder Singh.jpg"
+    },
+    {
+      "id": 33,
+      "title": "10 Bahute Janam Bichhre Te Madho",
+      "artist": "Sant Anoop Singh Una Sahib Wale",
+      "category": "Shabad",
+      "filename": "10 Bahute Janam Bichhre - Anoop Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/10 Bahute Janam Bichhre - Anoop Singh.mp3",
+      "durationSeconds": 506,
+      "duration": "8:26",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/10 Bahute Janam Bichhre - Anoop Singh.jpg"
+    },
+    {
+      "id": 34,
       "title": "10 Gur Ki Bani Aayi",
       "artist": "Joginder Singh",
       "category": "Shabad",
@@ -454,7 +590,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/10 Gur Ki Bani Aayi -  Joginder Singh.jpg"
     },
     {
-      "id": 27,
+      "id": 35,
       "title": "10 Gur Peeran Ki Chaakri",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -471,7 +607,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/10 Gur Peeran Ki Chaakri - Harbans Singh.jpg"
     },
     {
-      "id": 28,
+      "id": 36,
+      "title": "11 Aisi Preet Karo",
+      "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "11 Aisi Preet Karo - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/11 Aisi Preet Karo - Harjinder Singh.mp3",
+      "durationSeconds": 613,
+      "duration": "10:13",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/11 Aisi Preet Karo - Harjinder Singh.jpg"
+    },
+    {
+      "id": 37,
       "title": "11 Gur Poore Kirpa Dhaari",
       "artist": "Niranjan Singh",
       "category": "Shabad",
@@ -488,7 +641,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/11 Gur Poore Kirpa - Niranjan Singh.jpg"
     },
     {
-      "id": 29,
+      "id": 38,
       "title": "11 Guru Ji Mainu Na Bisro",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -505,7 +658,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/11 Guru Ji Mainu Na Bisro - Harbans Singh.jpg"
     },
     {
-      "id": 30,
+      "id": 39,
+      "title": "12 Aiso Heera Nirmal Naam",
+      "artist": "Bhai Ravinder Singh Ji",
+      "category": "Shabad",
+      "filename": "12 Aiso Heera Nirmal Naam - Ravinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/12 Aiso Heera Nirmal Naam - Ravinder Singh.mp3",
+      "durationSeconds": 837,
+      "duration": "13:57",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/12 Aiso Heera Nirmal Naam - Ravinder Singh.jpg"
+    },
+    {
+      "id": 40,
       "title": "12 Charan Chalho Marg Gobind",
       "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
       "category": "Shabad",
@@ -522,7 +692,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/12 Charan Chalho- Harjinder Singh.jpg"
     },
     {
-      "id": 31,
+      "id": 41,
       "title": "12 Guru Bin Kaun Kare",
       "artist": "12 Guru Bin Kaun Kare",
       "category": "Shabad",
@@ -539,7 +709,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/12 Guru Bin Kaun Kare.jpg"
     },
     {
-      "id": 32,
+      "id": 42,
       "title": "12 Jau Tou Prem Khelan Ka Chao",
       "artist": "Bhai Balwinder Singh Rangila",
       "category": "Shabad",
@@ -556,7 +726,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/12 Jau Tou Prem Khelan Ka Chao - Balwinder Singh Rangila.jpg"
     },
     {
-      "id": 33,
+      "id": 43,
+      "title": "13 Amrit Naam Nidhaan Hai",
+      "artist": "Bhai Harjinder Singh Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "13 Amrit Naam Nidhaan Hai - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/13 Amrit Naam Nidhaan Hai - Harjinder Singh.mp3",
+      "durationSeconds": 791,
+      "duration": "13:11",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/13 Amrit Naam Nidhaan Hai - Harjinder Singh.jpg"
+    },
+    {
+      "id": 44,
       "title": "13 Chogird Hamare Ram Kar",
       "artist": "Bhai Manpreet Singh",
       "category": "Shabad",
@@ -573,7 +760,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/13 Chogird Hamare Ram Kar - Manpreet Singh.jpg"
     },
     {
-      "id": 34,
+      "id": 45,
       "title": "13 Guru Guru Kar Man Mor",
       "artist": "Bhai Ravinder Singh",
       "category": "Shabad",
@@ -590,7 +777,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/13 Guru Guru Kar Man - Ravinder Singh.jpg"
     },
     {
-      "id": 35,
+      "id": 46,
       "title": "13 Jind Meriye Mitti Diye Dheriye",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -607,7 +794,41 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/13 Jind Meriye Mitti - Harbans Singh.jpg"
     },
     {
-      "id": 36,
+      "id": 47,
+      "title": "14 Apni Mehar Kar",
+      "artist": "Bhai Gurdial Singh",
+      "category": "Shabad",
+      "filename": "14 Apni Mehar Kar - Gurdial Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/14 Apni Mehar Kar - Gurdial Singh.mp3",
+      "durationSeconds": 841,
+      "duration": "14:01",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/14 Apni Mehar Kar - Gurdial Singh.jpg"
+    },
+    {
+      "id": 48,
+      "title": "14 Darshan Dekh Jeevan Gur Tera",
+      "artist": "Bhai Ravinder Singh",
+      "category": "Shabad",
+      "filename": "14 Darshan Dekh Jeevan - Ravinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/14 Darshan Dekh Jeevan - Ravinder Singh.mp3",
+      "durationSeconds": 573,
+      "duration": "9:33",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/14 Darshan Dekh Jeevan - Ravinder Singh.jpg"
+    },
+    {
+      "id": 49,
       "title": "14 Guru Ji Ke Darshan Ko Bal Jaun",
       "artist": "14 Guru Ji Ke Darshan Ko Bal",
       "category": "Shabad",
@@ -624,7 +845,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/14 Guru Ji Ke Darshan Ko Bal Jaun.jpg"
     },
     {
-      "id": 37,
+      "id": 50,
       "title": "14 Jindriye Kujh Naa",
       "artist": "Bhai Davinder Singh Sodhi",
       "category": "Shabad",
@@ -641,7 +862,41 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/14 Jindriye Kujh Naa - Davinder Singh Sodhi.jpg"
     },
     {
-      "id": 38,
+      "id": 51,
+      "title": "15 Daas Tere Ki Benti",
+      "artist": "Bhai Harjinder Singh Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "15 Daas Tere Ki Benti - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/15 Daas Tere Ki Benti - Harjinder Singh.mp3",
+      "durationSeconds": 587,
+      "duration": "9:47",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/15 Daas Tere Ki Benti - Harjinder Singh.jpg"
+    },
+    {
+      "id": 52,
+      "title": "15 Daya Karo",
+      "artist": "Bhai Niranjan Singh",
+      "category": "Shabad",
+      "filename": "15 Daya Karo - Niranjan Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/15 Daya Karo - Niranjan Singh.mp3",
+      "durationSeconds": 506,
+      "duration": "8:26",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/15 Daya Karo - Niranjan Singh.jpg"
+    },
+    {
+      "id": 53,
       "title": "15 Guru Meher Di Nazar Jad Maare",
       "artist": "15 Guru Meher Di Nazar Jad Ma",
       "category": "Shabad",
@@ -658,7 +913,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/15 Guru Meher Di Nazar Jad Maare.jpg"
     },
     {
-      "id": 39,
+      "id": 54,
       "title": "15 Meethe Lagde Guruji Tere Bol",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -675,7 +930,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/15 Meethe Lagde Guruji - Harbans Singh.jpg"
     },
     {
-      "id": 40,
+      "id": 55,
       "title": "16 Dayh Shivaa Bar Mohe",
       "artist": "Bhai Satvinder Singh",
       "category": "Shabad",
@@ -692,7 +947,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/16 Dayh Shivaa Bar Mohe - Satvinder Singh.jpg"
     },
     {
-      "id": 41,
+      "id": 56,
       "title": "16 Har Charan Kamal Ki Tek",
       "artist": "Niranjan Singh",
       "category": "Shabad",
@@ -709,7 +964,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/16 Har Charan Kamal - Niranjan Singh.jpg"
     },
     {
-      "id": 42,
+      "id": 57,
       "title": "16 Mere Satguru Ji Kirpa Karo",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -726,7 +981,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/16 Mere Satguru Ji Kirpa - Harbans Singh.jpg"
     },
     {
-      "id": 43,
+      "id": 58,
       "title": "17 Deedne Deedar Sahib",
       "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
       "category": "Shabad",
@@ -743,7 +998,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/17 Deedne Deedar Sahib - Harjinder Singh.jpg"
     },
     {
-      "id": 44,
+      "id": 59,
+      "title": "17 Gaavo Sachi Bani",
+      "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "17 Gaavo Sachi Bani - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/17 Gaavo Sachi Bani - Harjinder Singh.mp3",
+      "durationSeconds": 520,
+      "duration": "8:40",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/17 Gaavo Sachi Bani - Harjinder Singh.jpg"
+    },
+    {
+      "id": 60,
       "title": "17 Har Jiyo Kirpa Karho Tum Pyare",
       "artist": "17 Har Jiyo Kirpa Karho Tum P",
       "category": "Shabad",
@@ -760,7 +1032,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/17 Har Jiyo Kirpa Karho Tum Pyare.jpg"
     },
     {
-      "id": 45,
+      "id": 61,
       "title": "17 Mitran Kyon Dware Dware Dolda Phire",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -777,7 +1049,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/17 Mitran Kyon Dware - Harbans Singh.jpg"
     },
     {
-      "id": 46,
+      "id": 62,
       "title": "18 Deen Deyaal Bharossey Tere",
       "artist": "Bhai Nirmal Singh Nagpuri",
       "category": "Shabad",
@@ -794,7 +1066,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/18 Deen Dayaal - Nirmal Singh Nagpuri.jpg"
     },
     {
-      "id": 47,
+      "id": 63,
+      "title": "18 Gallin Jog Na Hoye",
+      "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "18 Gallin Jog Na Hoye - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/18 Gallin Jog Na Hoye - Harjinder Singh.mp3",
+      "durationSeconds": 765,
+      "duration": "12:45",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/18 Gallin Jog Na Hoye - Harjinder Singh.jpg"
+    },
+    {
+      "id": 64,
       "title": "18 Hou Tumri Karoh",
       "artist": "Onkar Singh",
       "category": "Shabad",
@@ -811,7 +1100,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/18 Hou Tumri Karoh Nit Aas - Onkar Singh.jpg"
     },
     {
-      "id": 48,
+      "id": 65,
       "title": "18 Naam Beej Lao Karma Waaleo",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -828,7 +1117,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/18 Naam Beej Lao Karma Waaleo - Harbans Singh.jpg"
     },
     {
-      "id": 49,
+      "id": 66,
       "title": "19 Duniya Hasyar Bedaar",
       "artist": "Sarabjit Singh",
       "category": "Shabad",
@@ -845,7 +1134,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/19 Duniya Hasyar - Sarabjit Singh.jpg"
     },
     {
-      "id": 50,
+      "id": 67,
+      "title": "19 Gur Poora Milaavai",
+      "artist": "Bhai Harjinder Singh Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "19 Gur Poora Milaavai - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/19 Gur Poora Milaavai - Harjinder Singh.mp3",
+      "durationSeconds": 777,
+      "duration": "12:57",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/19 Gur Poora Milaavai - Harjinder Singh.jpg"
+    },
+    {
+      "id": 68,
       "title": "19 Hum Kookar",
       "artist": "Bhai Harjinder Singh",
       "category": "Shabad",
@@ -862,7 +1168,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/19 Hum Kookar Tere Darbar - Bhai Harjinder Singh.jpg"
     },
     {
-      "id": 51,
+      "id": 69,
       "title": "19 Paap Na Kar Bandeya",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -879,7 +1185,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/19 Paap Na Kar Bandeya - Harbans Singh.jpg"
     },
     {
-      "id": 52,
+      "id": 70,
+      "title": "20 Deho Daras Sukh",
+      "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "20 Deho Daras Sukh Daatiya - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/20 Deho Daras Sukh Daatiya - Harjinder Singh.mp3",
+      "durationSeconds": 908,
+      "duration": "15:08",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/20 Deho Daras Sukh Daatiya - Harjinder Singh.jpg"
+    },
+    {
+      "id": 71,
       "title": "20 Pavane Meh Pavan Samaya",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -896,7 +1219,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/20 Pavane Meh Pavan Samaya - Harbans Singh.jpg"
     },
     {
-      "id": 53,
+      "id": 72,
       "title": "21 Dubidha Door Karo",
       "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
       "category": "Shabad",
@@ -913,7 +1236,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/21 Dubidha Door Karo - Harjinder Singh.jpg"
     },
     {
-      "id": 54,
+      "id": 73,
       "title": "21 Inhi Ki Kirpa Ke Saje Hum Hain",
       "artist": "Harjinder Singh (Sri Nagar Wale)",
       "category": "Shabad",
@@ -930,7 +1253,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/21 Inhi Ki Kirpa- Harjinder Singh.jpg"
     },
     {
-      "id": 55,
+      "id": 74,
       "title": "21 Ram Ram Karta Sab Jag Phire",
       "artist": "Bhai Balwinder Singh Rangila",
       "category": "Shabad",
@@ -947,7 +1270,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/21 Ram Ram Karta Sab Jag Phire - Balwinder Singh Rangila.jpg"
     },
     {
-      "id": 56,
+      "id": 75,
       "title": "22 Eh Man Tujhe",
       "artist": "Bhai Onkar Singh",
       "category": "Shabad",
@@ -964,7 +1287,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/22 Eh Man Tujhe Chittare - Onkar Singh.jpg"
     },
     {
-      "id": 57,
+      "id": 76,
+      "title": "22 Inhee Ki Kirpa",
+      "artist": "Sant Anoop Singh Una Sahib Wale",
+      "category": "Shabad",
+      "filename": "22 Inhee Ki Kirpa - Sant Anoop Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/22 Inhee Ki Kirpa - Sant Anoop Singh.mp3",
+      "durationSeconds": 606,
+      "duration": "10:06",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/22 Inhee Ki Kirpa - Sant Anoop Singh.jpg"
+    },
+    {
+      "id": 77,
       "title": "22 Jis Ke Sir Upar Tu Soami",
       "artist": "Niranjan Singh",
       "category": "Shabad",
@@ -981,7 +1321,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/22 Jis Ke Sir Upar Tu - Niranjan Singh.jpg"
     },
     {
-      "id": 58,
+      "id": 78,
       "title": "22 Satguru Mera Sarabh Prati Paley",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -998,7 +1338,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/22 Satguru Mera Sarabh Prati Paley - Harbans Singh.jpg"
     },
     {
-      "id": 59,
+      "id": 79,
       "title": "23 Eh Neech Karam Har Mere",
       "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
       "category": "Shabad",
@@ -1015,7 +1355,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/23 Eh Neech Karam Har Mere - Harjinder Singh.jpg"
     },
     {
-      "id": 60,
+      "id": 80,
+      "title": "23 Jitthe Mehar Teri",
+      "artist": "Bhai Harbans Singh (Jagadhari Wale)",
+      "category": "Shabad",
+      "filename": "41 Jitthe Mehar Teri - Harbans Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/03 Shabads with Vyakhya/41 Jitthe Mehar Teri - Harbans Singh.mp3",
+      "durationSeconds": 1789,
+      "duration": "29:49",
+      "hasVyakhya": true,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/41 Jitthe Mehar Teri - Harbans Singh.jpg"
+    },
+    {
+      "id": 81,
       "title": "23 Kirpa Karoh Deen Ke",
       "artist": "23 Kirpa Karoh Deen Ke Daatey",
       "category": "Shabad",
@@ -1032,7 +1389,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/23 Kirpa Karoh Deen Ke Daatey.jpg"
     },
     {
-      "id": 61,
+      "id": 82,
       "title": "23 Soee Soee Devay",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -1049,7 +1406,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/23 Soee Soee Devay - Harbans Singh.jpg"
     },
     {
-      "id": 62,
+      "id": 83,
       "title": "24 Eko Naam Dhiaaye",
       "artist": "Bhai Surinder Singh Jodhpuri",
       "category": "Shabad",
@@ -1066,7 +1423,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/24 Eko Naam Dhiaaye - Surinder Singh Jodhpuri.jpg"
     },
     {
-      "id": 63,
+      "id": 84,
       "title": "24 Koi Bole Raam Raam",
       "artist": "Satvinder Singh & Harvinder Singh",
       "category": "Shabad",
@@ -1083,7 +1440,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/24 Koi Bole Ram Ram - Satvinder Singh  Harvinder Singh.jpg"
     },
     {
-      "id": 64,
+      "id": 85,
+      "title": "24 Kripa Kar Shaam Ehe Baar Dije",
+      "artist": "Bhai Sadhu Singh Ji (Dehradun Wale)",
+      "category": "Shabad",
+      "filename": "24 Kirpa Kar Shaam - Sadhu S. Dehradun wale.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/24 Kirpa Kar Shaam - Sadhu S. Dehradun wale.mp3",
+      "durationSeconds": 292,
+      "duration": "4:52",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/24 Kirpa Kar Shaam - Sadhu S Dehradun wale.jpg"
+    },
+    {
+      "id": 86,
       "title": "25 Gun Gavan Nit Tere",
       "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
       "category": "Shabad",
@@ -1100,7 +1474,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/25 Gun Gawan Nit Tere - Harjinder Singh.jpg"
     },
     {
-      "id": 65,
+      "id": 87,
+      "title": "25 Kirpa Karo",
+      "artist": "Bhai Gopal Singh",
+      "category": "Shabad",
+      "filename": "25 Kirpa Karo - Gopal Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/25 Kirpa Karo - Gopal Singh.mp3",
+      "durationSeconds": 375,
+      "duration": "6:15",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/25 Kirpa Karo - Gopal Singh.jpg"
+    },
+    {
+      "id": 88,
       "title": "25 Lakh Khushian Patshahian",
       "artist": "25 Lakh Khushian Patshahian",
       "category": "Shabad",
@@ -1117,7 +1508,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/25 Lakh Khushian Patshahian.jpg"
     },
     {
-      "id": 66,
+      "id": 89,
       "title": "26 Gur Bin Ghor Andhaar",
       "artist": "Sant Anoop Singh Una Sahib Wale",
       "category": "Shabad",
@@ -1134,7 +1525,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/26 Gur Bin Ghor Andhaar - Anoop Singh.jpg"
     },
     {
-      "id": 67,
+      "id": 90,
+      "title": "26 Koi Nau Na Jaane",
+      "artist": "Bhai Harjinder Singh Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "26 Koi Nau Na Jaane - Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/26 Koi Nau Na Jaane - Harjinder Singh.mp3",
+      "durationSeconds": 832,
+      "duration": "13:52",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/26 Koi Nau Na Jaane - Harjinder Singh.jpg"
+    },
+    {
+      "id": 91,
       "title": "26 Maangna Maangan Neeka",
       "artist": "Bhai Harjinder Singh (Sri Nagar Wale)",
       "category": "Shabad",
@@ -1151,7 +1559,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/26 Maangna Maangan - Harjinder Singh.jpg"
     },
     {
-      "id": 68,
+      "id": 92,
       "title": "27 Gur Jaisa Naahin Ko Dev",
       "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
       "category": "Shabad",
@@ -1168,7 +1576,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/27 Gur Jaisa Naahin-Harjinder Singh.jpg"
     },
     {
-      "id": 69,
+      "id": 93,
+      "title": "27 Lakh Khushian Patshahian",
+      "artist": "Bhai Gurdial Singh",
+      "category": "Shabad",
+      "filename": "27 Lakh Khushian Patshahian - Gurdial Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/27 Lakh Khushian Patshahian - Gurdial Singh.mp3",
+      "durationSeconds": 563,
+      "duration": "9:23",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/27 Lakh Khushian Patshahian - Gurdial Singh.jpg"
+    },
+    {
+      "id": 94,
       "title": "27 Madho Hum Aise Tu Aisa",
       "artist": "Surinder Singh",
       "category": "Shabad",
@@ -1185,7 +1610,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/27 Madho Hum Aise - Surinder Singh.jpg"
     },
     {
-      "id": 70,
+      "id": 95,
       "title": "28 Gur Pure Meri Raakh Leyi",
       "artist": "Bhai Ravinder Singh",
       "category": "Shabad",
@@ -1202,7 +1627,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/28 Gur Pure Meri Raakh- Ravinder Singh.jpg"
     },
     {
-      "id": 71,
+      "id": 96,
       "title": "28 Mann Mere Har Ke Charan",
       "artist": "Harjinder Singh (Sri Nagar Wale)",
       "category": "Shabad",
@@ -1219,7 +1644,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/28 Mann Mere Har Ke Charan - Bhai Harjinder Singh.jpg"
     },
     {
-      "id": 72,
+      "id": 97,
       "title": "29 Guru Ka Bachan",
       "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
       "category": "Shabad",
@@ -1236,7 +1661,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/29 Guru Ka Bachan Vasai - Harjinder Singh.jpg"
     },
     {
-      "id": 73,
+      "id": 98,
       "title": "29 Mera Satguru Pyara",
       "artist": "29 Mera Satguru Pyara",
       "category": "Shabad",
@@ -1253,7 +1678,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/29 Mera Satguru Pyara.jpg"
     },
     {
-      "id": 74,
+      "id": 99,
       "title": "30 Hey Gobind",
       "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
       "category": "Shabad",
@@ -1270,7 +1695,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/30 Hey Gobind - Harjinder Singh.jpg"
     },
     {
-      "id": 75,
+      "id": 100,
+      "title": "30 Mera Mujh",
+      "artist": "Bhai Gopal Singh",
+      "category": "Shabad",
+      "filename": "30 Mera Mujh Mein - Gopal Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/30 Mera Mujh Mein - Gopal Singh.mp3",
+      "durationSeconds": 366,
+      "duration": "6:06",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/30 Mera Mujh Mein - Gopal Singh.jpg"
+    },
+    {
+      "id": 101,
       "title": "30 Meri Meri Karde Janam Gayo",
       "artist": "Davinder Singh Sodhi",
       "category": "Shabad",
@@ -1287,7 +1729,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/30 Meri Meri Karde - Davinder S Sodhi.jpg"
     },
     {
-      "id": 76,
+      "id": 102,
       "title": "31 Hum Tumhare Sewak",
       "artist": "Bhai Onkar Singh",
       "category": "Shabad",
@@ -1304,7 +1746,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/31 Hum Tumhare Sewak - Onkar Singh.jpg"
     },
     {
-      "id": 77,
+      "id": 103,
       "title": "31 Mohan Moh Lia Man Mera",
       "artist": "Harjinder Singh (Sri Nagar Wale)",
       "category": "Shabad",
@@ -1321,7 +1763,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/31 Mohan Moh Lia - Harjinder Singh.jpg"
     },
     {
-      "id": 78,
+      "id": 104,
       "title": "32 Ja Kou Hari Rang Laago",
       "artist": "Bhai Onkar Singh",
       "category": "Shabad",
@@ -1338,7 +1780,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/32 Ja Kou Hari Rang Laago - Onkar Singh.jpg"
     },
     {
-      "id": 79,
+      "id": 105,
       "title": "32 Nirgun Rakh Liya",
       "artist": "Prof Darshan Singh",
       "category": "Shabad",
@@ -1355,7 +1797,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/32 Nirgun Rakh Liya - Prof Darshan Singh.jpg"
     },
     {
-      "id": 80,
+      "id": 106,
       "title": "33 Madhave",
       "artist": "Prof Darsan Singh",
       "category": "Shabad",
@@ -1372,7 +1814,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/33 Madhave - Prof Darsan Singh.jpg"
     },
     {
-      "id": 81,
+      "id": 107,
       "title": "34 Main Bin Gur Dekhe",
       "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
       "category": "Shabad",
@@ -1389,7 +1831,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/34 Main Bin Gur Dekhe - Harjinder Singh.jpg"
     },
     {
-      "id": 82,
+      "id": 108,
       "title": "34 Prabh Keejei Kirpa Nidhaan",
       "artist": "34 Prabh Keejei Kirpa Nidhaan",
       "category": "Shabad",
@@ -1406,7 +1848,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/34 Prabh Keejei Kirpa Nidhaan.jpg"
     },
     {
-      "id": 83,
+      "id": 109,
       "title": "35 Mera Sunder Swami Ji",
       "artist": "Bhai Ravinder Singh",
       "category": "Shabad",
@@ -1423,7 +1865,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/35 Mera Sunder Swami Ji - Ravinder Singh.jpg"
     },
     {
-      "id": 84,
+      "id": 110,
       "title": "35 Prani Kya Mera Kya Tera",
       "artist": "Bhai Ravinder Singh",
       "category": "Shabad",
@@ -1440,7 +1882,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/35 Prani Kya Mera Kya - Ravinder Singh.jpg"
     },
     {
-      "id": 85,
+      "id": 111,
       "title": "36 Mere Hridaya Pe Naam",
       "artist": "36 Mere Hridaya Pe Naam",
       "category": "Shabad",
@@ -1457,7 +1899,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/36 Mere Hridaya Pe Naam.jpg"
     },
     {
-      "id": 86,
+      "id": 112,
       "title": "36 Raakho Rakho Kirpa Dhar",
       "artist": "Bhai Ravinder Singh",
       "category": "Shabad",
@@ -1474,7 +1916,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/36 Raakho Rakho Kirpa Dhar - Ravinder Singh.jpg"
     },
     {
-      "id": 87,
+      "id": 113,
       "title": "37 Mool Mantra",
       "artist": "Bhai Gurvinder & Gurdeep Singh",
       "category": "Shabad",
@@ -1491,7 +1933,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/37 Mool Mantra - Gurvinder  Gurdeep Singh.jpg"
     },
     {
-      "id": 88,
+      "id": 114,
       "title": "37 Sabh Kich Jaanda",
       "artist": "37 Sabh Kich Jaanda",
       "category": "Shabad",
@@ -1508,7 +1950,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/37 Sabh Kich Jaanda.jpg"
     },
     {
-      "id": 89,
+      "id": 115,
       "title": "38 Naal Narayan Merei",
       "artist": "Bhai Onkar Singh",
       "category": "Shabad",
@@ -1525,7 +1967,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/38 Naal Narayan Merei - Onkar Singh.jpg"
     },
     {
-      "id": 90,
+      "id": 116,
+      "title": "38 Ram Ras Piya Re",
+      "artist": "Bhai Harjinder Singh Sri Nagar Wale",
+      "category": "Shabad",
+      "filename": "38 Ram Ras Piya Re -Harjinder Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/38 Ram Ras Piya Re -Harjinder Singh.mp3",
+      "durationSeconds": 916,
+      "duration": "15:16",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/38 Ram Ras Piya Re -Harjinder Singh.jpg"
+    },
+    {
+      "id": 117,
       "title": "39 Nadar Kare Taa Simreya Jaye",
       "artist": "Sant Anoop Singh Una Sahib Wale",
       "category": "Shabad",
@@ -1542,7 +2001,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/39 Nadar Kare Taa - Anoop Singh.jpg"
     },
     {
-      "id": 91,
+      "id": 118,
+      "title": "39 Re Man Aiso Kar Sanyasa",
+      "artist": "Bhai Balwinder Singh Rangila",
+      "category": "Shabad",
+      "filename": "42 Re Man Aiso Kar Sanyasa - Balwinder Singh Rangila.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/03 Shabads with Vyakhya/42 Re Man Aiso Kar Sanyasa - Balwinder Singh Rangila.mp3",
+      "durationSeconds": 1520,
+      "duration": "25:20",
+      "hasVyakhya": true,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/42 Re Man Aiso Kar Sanyasa - Balwinder Singh Rangila.jpg"
+    },
+    {
+      "id": 119,
       "title": "39 Tumri Kirpa Te",
       "artist": "Bhai Harjinder Singh (Sri Nagar Wale)",
       "category": "Shabad",
@@ -1559,7 +2035,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/39 Tumri Kirpa Te - Harjinder Singh.jpg"
     },
     {
-      "id": 92,
+      "id": 120,
       "title": "40 Nanak Chinta Mat Karo",
       "artist": "Bhai Gurvinder & Gurdeep Singh",
       "category": "Shabad",
@@ -1576,7 +2052,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/40 Nanak Chinta Mat Karo - Gurvinder Singh.jpg"
     },
     {
-      "id": 93,
+      "id": 121,
+      "title": "40 Satguru Ki Seva",
+      "artist": "Bhai Gopal Singh",
+      "category": "Shabad",
+      "filename": "40 Satguru Ki Seva - Gopal Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/40 Satguru Ki Seva - Gopal Singh.mp3",
+      "durationSeconds": 350,
+      "duration": "5:50",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/40 Satguru Ki Seva - Gopal Singh.jpg"
+    },
+    {
+      "id": 122,
       "title": "40 Waheguru Simran",
       "artist": "Bhai Harjinder Singh Ji (Sri Nagar Wale)",
       "category": "Shabad",
@@ -1593,7 +2086,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/40 Waheguru Simran - Harjinder S Srinagar Wale.jpg"
     },
     {
-      "id": 94,
+      "id": 123,
       "title": "41 Phir Vichhoda Kade Na Hoye",
       "artist": "Bhai Onkar Singh",
       "category": "Shabad",
@@ -1610,7 +2103,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/41 Phir Vichhoda Kade Na Hoye - Onkar Singh.jpg"
     },
     {
-      "id": 95,
+      "id": 124,
       "title": "42 Saa Dharti Bhayi Haryawali",
       "artist": "Bhai Ravinder Singh",
       "category": "Shabad",
@@ -1627,7 +2120,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/42 Saa Dharti Bhayi - Ravinder Singh.jpg"
     },
     {
-      "id": 96,
+      "id": 125,
       "title": "42 Saun Kaun Riha Roraan Te",
       "artist": "Bhai Sadhu Singh",
       "category": "Shabad",
@@ -1644,7 +2137,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/42 Saun Kaun - Sadhu Singh.jpg"
     },
     {
-      "id": 97,
+      "id": 126,
       "title": "43 Sat Guru Hoi Dayal",
       "artist": "43 Sat Guru Hoi Dayal",
       "category": "Shabad",
@@ -1661,7 +2154,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/43 Sat Guru Hoi Dayal.jpg"
     },
     {
-      "id": 98,
+      "id": 127,
       "title": "43 Simar Manna Ram Nam",
       "artist": "Bhai Harjinder Singh Sri Nagar Wale",
       "category": "Shabad",
@@ -1678,7 +2171,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/43 Simar Manna - Harjinder Singh.jpg"
     },
     {
-      "id": 99,
+      "id": 128,
       "title": "44 Sabh Jag Phir Main Dekhiya",
       "artist": "Bhai Harjinder Singh Ji Sri Nagar Wale",
       "category": "Shabad",
@@ -1695,7 +2188,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/44 Sabh Jag Phir Main Dekhiya - Harjinder Singh.jpg"
     },
     {
-      "id": 100,
+      "id": 129,
       "title": "45 Sakhi Aao Sakhi",
       "artist": "Harjinder Singh (Sri Nagar Wale)",
       "category": "Shabad",
@@ -1712,7 +2205,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/45 Sakhi Aao Sakhi - Harjinder Singh.jpg"
     },
     {
-      "id": 101,
+      "id": 130,
       "title": "45 So Satgur Pyara Mere Naal Hai",
       "artist": "Manpreet Singh",
       "category": "Shabad",
@@ -1729,7 +2222,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/45 So Satgur Pyara - Manpreet Singh.jpg"
     },
     {
-      "id": 102,
+      "id": 131,
       "title": "46 Satgur Aaeyo Saran Tumhaari",
       "artist": "Bhai Ravinder Singh",
       "category": "Shabad",
@@ -1746,7 +2239,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/46 Satgur Aaeyo Saran - Ravinder Singh.jpg"
     },
     {
-      "id": 103,
+      "id": 132,
       "title": "46 Tere Bhane Sarbat Da Bhala",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -1763,7 +2256,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/46 Tere Bhane Sarbat Da Bhala - Harbans Singh.jpg"
     },
     {
-      "id": 104,
+      "id": 133,
       "title": "47 Satguru Ki Sewa Safal Hai",
       "artist": "Bhai Harjinder Singh (Sri Nagar Wale)",
       "category": "Shabad",
@@ -1780,7 +2273,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/47 Satguru Ki Sewa Safal Hai - Harjinder Singh.jpg"
     },
     {
-      "id": 105,
+      "id": 134,
       "title": "47 Tere Gun Gawan",
       "artist": "Bhai Harjinder Singh Sri Nagar Wale",
       "category": "Shabad",
@@ -1797,7 +2290,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/47 Tere Gun Gawan - Harjinder Singh.jpg"
     },
     {
-      "id": 106,
+      "id": 135,
       "title": "48 Sacha Saheb Sada Miharbaan",
       "artist": "Bhai Ravinder Singh",
       "category": "Shabad",
@@ -1814,7 +2307,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/48 Sacha Saheb Sada Miharbaan - Ravinder Singh.jpg"
     },
     {
-      "id": 107,
+      "id": 136,
       "title": "48 Teri Bhagat Na Chhodun",
       "artist": "Bhai Harjinder Singh Sri Nagar Wale",
       "category": "Shabad",
@@ -1831,7 +2324,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/48 Teri Bhagat Na Chhodun - Harjinder Singh.jpg"
     },
     {
-      "id": 108,
+      "id": 137,
       "title": "49 Satgur Daya Kare",
       "artist": "Bhai Onkar Singh",
       "category": "Shabad",
@@ -1848,7 +2341,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/49 Satgur Daya Kare - Onkar Singh.jpg"
     },
     {
-      "id": 109,
+      "id": 138,
+      "title": "49 Tu Mera Pita",
+      "artist": "49 Tu Mera Pita",
+      "category": "Shabad",
+      "filename": "49 Tu Mera Pita.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/49 Tu Mera Pita.mp3",
+      "durationSeconds": 473,
+      "duration": "7:53",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/49 Tu Mera Pita.jpg"
+    },
+    {
+      "id": 139,
       "title": "50 Sun Wadh Bhagiya",
       "artist": "50 Sun Wadh Bhagiya",
       "category": "Shabad",
@@ -1865,7 +2375,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/50 Sun Wadh Bhagiya.jpg"
     },
     {
-      "id": 110,
+      "id": 140,
       "title": "50 Tu Sun Mann Gaafil",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -1882,7 +2392,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/50 Tu Sun Mann Gaafil - Harbans Singh.jpg"
     },
     {
-      "id": 111,
+      "id": 141,
       "title": "51 Satnam",
       "artist": "Bhai Surinder Singh Jodhpuri",
       "category": "Shabad",
@@ -1899,7 +2409,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/51 Satnam - Surinder Singh Jodhpuri.jpg"
     },
     {
-      "id": 112,
+      "id": 142,
+      "title": "51 Tum Sio Joree",
+      "artist": "Bhai Gurvinder & Gurdeep Singh",
+      "category": "Shabad",
+      "filename": "51 Tum Sio Joree - Gurvinder & Gurdeep Singh.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/51 Tum Sio Joree - Gurvinder & Gurdeep Singh.mp3",
+      "durationSeconds": 851,
+      "duration": "14:11",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/51 Tum Sio Joree - Gurvinder  Gurdeep Singh.jpg"
+    },
+    {
+      "id": 143,
       "title": "52 Se Simre Jin Aap Simraye",
       "artist": "Sant Anoop Singh Una Sahib Wale",
       "category": "Shabad",
@@ -1916,7 +2443,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/52 Se Simre- Anoop Singh.jpg"
     },
     {
-      "id": 113,
+      "id": 144,
       "title": "52 Tu Mero Pyaro Taan Kaisi Bhukh",
       "artist": "Sant Anoop Singh",
       "category": "Shabad",
@@ -1933,7 +2460,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/52 Tu Mero Pyaro - Anoop Singh.jpg"
     },
     {
-      "id": 114,
+      "id": 145,
       "title": "53 Tu Mera Pita",
       "artist": "Bhai Gopal Singh",
       "category": "Shabad",
@@ -1950,7 +2477,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/53 Tu Mera Pita - Gopal Singh.jpg"
     },
     {
-      "id": 115,
+      "id": 146,
       "title": "53 Tumri Kirpa Te",
       "artist": "Bhai Harjinder Singh Sri Nagar Wale",
       "category": "Shabad",
@@ -1967,7 +2494,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/53 Tumri Kirpa Te - Harjinder Singh.jpg"
     },
     {
-      "id": 116,
+      "id": 147,
       "title": "54 Tu Sewa Kar Sansar Di",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -1984,7 +2511,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/54 Tu Sewa Kar Sansar Di - Harbans Singh.jpg"
     },
     {
-      "id": 117,
+      "id": 148,
       "title": "54 Tum Siyon Jori",
       "artist": "54 Tum Siyon Jori",
       "category": "Shabad",
@@ -2001,7 +2528,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/54 Tum Siyon Jori.jpg"
     },
     {
-      "id": 118,
+      "id": 149,
       "title": "55 Satnam Waheguru Simran",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -2018,7 +2545,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/55 Satnam Wahe Guru Simran - Harbans Singh.jpg"
     },
     {
-      "id": 119,
+      "id": 150,
       "title": "55 Wahe Guru Wahe Guru Kar Bandiya",
       "artist": "Bhai Harbans Singh (Jagadhari Wale)",
       "category": "Shabad",
@@ -2035,7 +2562,24 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/55 Wahe Guru Kar Bandiya - Harbans Singh.jpg"
     },
     {
-      "id": 120,
+      "id": 151,
+      "title": "56 Waheguru Waheguru",
+      "artist": "56 Waheguru Waheguru",
+      "category": "Shabad",
+      "filename": "56 Waheguru Waheguru.mp3",
+      "url": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Shabad/02 Shabads/56 Waheguru Waheguru.mp3",
+      "durationSeconds": 611,
+      "duration": "10:11",
+      "hasVyakhya": false,
+      "isAarti": false,
+      "isOpening": false,
+      "isClosing": false,
+      "loudnessLufs": null,
+      "gainDb": 0.0,
+      "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/56 Waheguru Waheguru.jpg"
+    },
+    {
+      "id": 152,
       "title": "57 Yeh Benanti",
       "artist": "Bhai Gurdial Singh",
       "category": "Shabad",
@@ -2052,7 +2596,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/57 Yeh Benanti - Gurdial Singh.jpg"
     },
     {
-      "id": 121,
+      "id": 153,
       "title": "Baani Guru Guru Hai Baani - Harbans Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2069,7 +2613,7 @@
       "artwork": null
     },
     {
-      "id": 122,
+      "id": 154,
       "title": "Bhagtan Wich App Varatda Prabhji (PenduJatt.Com)",
       "artist": "Bahi Harbans Singh Jagadhri Wale,Viakhaya (Pendu-Jatt.Com)",
       "category": "Shabad",
@@ -2086,7 +2630,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/25 Bhagtaan Wich Aap Varatda Prabhji - Harbans Singh.png"
     },
     {
-      "id": 123,
+      "id": 155,
       "title": "Bin Bhagan Satsang Naa Labhe - Harbans Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2103,7 +2647,7 @@
       "artwork": null
     },
     {
-      "id": 124,
+      "id": 156,
       "title": "Daata Baksh Le - Chamanjit Singh Lal",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2120,7 +2664,7 @@
       "artwork": null
     },
     {
-      "id": 125,
+      "id": 157,
       "title": "Dayala Raakh Dayala - Gursharan Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2137,7 +2681,7 @@
       "artwork": null
     },
     {
-      "id": 126,
+      "id": 158,
       "title": "Guru Hai Mere Sang(Vyakhya)",
       "artist": "Bhai Harbans Singh Ji Ragi (Jagadhri Wale) (Pendu-Jatt.Com)",
       "category": "Shabad",
@@ -2154,7 +2698,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/29 Guru Mere Sang Sada Hai Naale - Harbans Singh.jpg"
     },
     {
-      "id": 127,
+      "id": 159,
       "title": "Ik Takya Bharosa Tere Charna Da - Harbans Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2171,7 +2715,7 @@
       "artwork": null
     },
     {
-      "id": 128,
+      "id": 160,
       "title": "Jholi Aad Ke Duaare Tere Aa Gaya - Harbans Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2188,7 +2732,7 @@
       "artwork": null
     },
     {
-      "id": 129,
+      "id": 161,
       "title": "Man Mere Bhule Kapat Na Kije - Harbans Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2205,7 +2749,7 @@
       "artwork": null
     },
     {
-      "id": 130,
+      "id": 162,
       "title": "Mere Hirdey Waheguru Naam Likh De - Wahegur",
       "artist": "Bhai Harbans Singh (Jagadhri Wale)",
       "category": "Shabad",
@@ -2222,7 +2766,7 @@
       "artwork": "https://pub-822298d58bb648709a4fb898411932a1.r2.dev/Guruji Swaroop_Cover Art/33 Mere Hirday Te Waheguru Naam Likh De - Harbans Singh.jpg"
     },
     {
-      "id": 131,
+      "id": 163,
       "title": "Rakkhi Charna De Kol - Harbans Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2239,7 +2783,7 @@
       "artwork": null
     },
     {
-      "id": 132,
+      "id": 164,
       "title": "So Satgur Pyara Mere Naal Hai - Gurpreet Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2256,7 +2800,7 @@
       "artwork": null
     },
     {
-      "id": 133,
+      "id": 165,
       "title": "Swasan Di Mala Naal Simra - Harbans Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2273,7 +2817,7 @@
       "artwork": null
     },
     {
-      "id": 134,
+      "id": 166,
       "title": "Tera Heera Janam Anmol Khalsa - Harbans Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2290,7 +2834,7 @@
       "artwork": null
     },
     {
-      "id": 135,
+      "id": 167,
       "title": "Tere Bharose Pyaare - Chamanjit Singh Lal",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2307,7 +2851,7 @@
       "artwork": null
     },
     {
-      "id": 136,
+      "id": 168,
       "title": "Toon Kaley Likh Na Lekh Bandeya - Harbans Singh",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2324,7 +2868,7 @@
       "artwork": null
     },
     {
-      "id": 137,
+      "id": 169,
       "title": "Tu Mera Pita Tu Hai Mera Mata - Davinder Singh Sodhi",
       "artist": "Unknown",
       "category": "Shabad",
@@ -2341,7 +2885,7 @@
       "artwork": null
     },
     {
-      "id": 138,
+      "id": 170,
       "title": "Guruji Mantra Jaap",
       "artist": "Unknown",
       "category": "Shabad",
