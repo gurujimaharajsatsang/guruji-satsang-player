@@ -1384,6 +1384,7 @@ const CONFIG = {
 const MIN_GAP_FILL_SECONDS = 180;   // 3 minutes
 
 let LIBRARY = [], EXTRAS = [], playlist = [];
+let SWAROOP_IMAGES = [];   // photos from Guruji Swaroop Main, reused as cover-art fallback
 let openingTrack = null, closingTracks = [];
 let currentIndex = -1;
 /* Playback mode:
@@ -1582,6 +1583,7 @@ async function loadTracks(){
     LIBRARY=shabad.filter(t=>!t.isOpening&&!t.isClosing);
     document.getElementById('libCount').textContent=`${LIBRARY.length} shabads`;
     setOffline(true);
+    SWAROOP_IMAGES=Array.isArray(data.slideshow)?data.slideshow.slice():[];
     setupSlideshow(data.slideshow);    // photos from Guruji Swaroop Main
     renderLibrary(); renderExtras(); resetPlaylist();
     toast('Library loaded \u2014 '+LIBRARY.length+' shabads, '+EXTRAS.length+' aartis');
@@ -2158,6 +2160,15 @@ function updateLibHeaderButton(){
   lbl.textContent=libPlaying?'Pause':'Play';
 }
 
+/* The cover image for a track: its own extracted art if it has any,
+   otherwise a Guruji swaroop photo (same photos as the slideshow),
+   picked consistently per track so it stays steady. Returns null only
+   when there is no artwork AND no swaroop photo to fall back to. */
+function coverFor(t){
+  if(t&&t.artwork) return t.artwork;
+  if(SWAROOP_IMAGES.length) return SWAROOP_IMAGES[Math.abs((t&&t.id)||0)%SWAROOP_IMAGES.length];
+  return null;
+}
 function updatePlayerUI(){
   // Always use nowPlaying — works for playlist tracks AND library/aarti tracks.
   const t=nowPlaying;
@@ -2185,9 +2196,10 @@ function updatePlayerUI(){
     pos='  \u00b7  Shabad Library';
   }
   document.getElementById('npArtist').textContent=t.artist+pos;
-  // Cover art from the track's extracted image, if any.
-  if(t.artwork){
-    art.innerHTML=`<img src="${encodeURI(t.artwork)}" alt=""
+  // Cover art from the track's extracted image, or a swaroop photo fallback.
+  const cover=coverFor(t);
+  if(cover){
+    art.innerHTML=`<img src="${encodeURI(cover)}" alt=""
       onerror="this.parentNode.innerHTML='\u266a'">`;
   }else{
     art.innerHTML='\u266a';
