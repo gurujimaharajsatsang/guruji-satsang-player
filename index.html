@@ -1384,7 +1384,7 @@ const CONFIG = {
 const MIN_GAP_FILL_SECONDS = 180;   // 3 minutes
 
 let LIBRARY = [], EXTRAS = [], playlist = [];
-let openingTrack = null, closingTrack = null;
+let openingTrack = null, closingTracks = [];
 let currentIndex = -1;
 /* Playback mode:
    'playlist' — playing the timed Satsang Playlist (left column)
@@ -1504,6 +1504,19 @@ function fmt(sec){
   return `${m}:${String(s).padStart(2,'0')}`;
 }
 function cleanTitle(t){ return t.replace(/^\s*\d{1,3}\s+(?=\S)/,'').trim()||t; }
+/* The leading number on a filename (e.g. "07 Gagan Mein Thaal.mp3" -> 7).
+   Tracks with no leading number sort last, then alphabetically. Used to
+   list the aartis (and any closing bookends) in true folder order rather
+   than the order they happen to sit in tracks.json. */
+function trackNumber(t){
+  const m=(t&&t.filename||'').match(/^\s*(\d+)/);
+  return m?parseInt(m[1],10):Number.POSITIVE_INFINITY;
+}
+function byTrackNumber(a,b){
+  const na=trackNumber(a),nb=trackNumber(b);
+  if(na!==nb) return na-nb;
+  return (a.filename||'').localeCompare((b.filename||''),undefined,{numeric:true});
+}
 function escapeHtml(s){
   return String(s).replace(/[&<>"]/g,c=>
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1562,10 +1575,10 @@ async function loadTracks(){
     const data=await res.json();
     const all=(data.tracks||[]);
     all.forEach(t=>{ t.displayTitle=cleanTitle(t.title); });
-    EXTRAS=all.filter(t=>t.category==='Aarti'||t.isAarti);
+    EXTRAS=all.filter(t=>t.category==='Aarti'||t.isAarti).sort(byTrackNumber);
     const shabad=all.filter(t=>t.category==='Shabad');
     openingTrack=shabad.find(t=>t.isOpening)||null;
-    closingTrack=shabad.find(t=>t.isClosing)||null;
+    closingTracks=shabad.filter(t=>t.isClosing).sort(byTrackNumber);
     LIBRARY=shabad.filter(t=>!t.isOpening&&!t.isClosing);
     document.getElementById('libCount').textContent=`${LIBRARY.length} shabads`;
     setOffline(true);
@@ -1591,7 +1604,7 @@ function setOffline(ready){
 function resetPlaylist(){
   playlist=[];
   if(openingTrack) playlist.push(openingTrack);
-  if(closingTrack) playlist.push(closingTrack);
+  playlist.push(...closingTracks);
   renderPlaylist(); updateBudget(); updateSatsangProgress();
 }
 function middleTracks(){ return playlist.filter(t=>!t.isOpening&&!t.isClosing); }
@@ -1599,7 +1612,7 @@ function rebuildPlaylist(mid){
   playlist=[];
   if(openingTrack) playlist.push(openingTrack);
   playlist.push(...mid);
-  if(closingTrack) playlist.push(closingTrack);
+  playlist.push(...closingTracks);
   renderPlaylist(); updateBudget(); updateSatsangProgress();
 }
 
@@ -1844,7 +1857,7 @@ function renderPlaylist(){
       </div>`;
     }
   }
-  if(closingTrack) html+=playlistRow(closingTrack,'closing');
+  closingTracks.forEach(t=>{ html+=playlistRow(t,'closing'); });
   listEl.innerHTML=html;
 }
 function playlistRow(t,kind,midIndex,midTotal){
@@ -1900,7 +1913,7 @@ function moveTrack(midIndex,dir){
 function autoFill(){
   const target=targetMinutes*60;
   const oc=(openingTrack?openingTrack.durationSeconds:0)+
-           (closingTrack?closingTrack.durationSeconds:0);
+           closingTracks.reduce((s,t)=>s+(t.durationSeconds||0),0);
   let budget=target-oc;
   if(budget<=0){ toast('Duration too short for opening + closing.'); return; }
   const chosen=[]; let used=0;
