@@ -1376,7 +1376,7 @@ const CONFIG = {
   audioBase: '',
   vyakhyaForTwoHour: true,
   slideIntervalMs: 6000,   // how long each slideshow photo shows
-  gapSeconds: 2,           // fixed gap between tracks
+  gapSeconds: 2,           // calm breathing space between tracks (seconds; may be fractional, e.g. 1.5). Buffering is handled separately by prefetch, so this is pure silence.
 };
 
 // The "Auto-Fill the remaining time" slot only appears when at least
@@ -1401,6 +1401,8 @@ let libShuffleOn = false;       // Shuffle is a toggle, not a one-shot action
 let libQueue = [];              // ordered queue of tracks for 'library' mode
 let libQueueIndex = -1;         // position within libQueue
 let gapTimer = null;
+let trackEnded = false;   // guard so a track only advances once (early-cut OR 'ended')
+let _prefetch = null;     // warms the next track so the hand-off has no buffering pause
 let recentlyUsed = [];
 let levelerOn = true;
 
@@ -2037,6 +2039,7 @@ function setupDrag(){
 /* ---------- Player ---------- */
 function playTrackObject(t,indexInPlaylist,mode){
   clearTimeout(gapTimer); clearInterval(gapTimer);
+  trackEnded=false;
   setGapIndicator(false);
   ensureAudioGraph();
   if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
@@ -2051,7 +2054,22 @@ function playTrackObject(t,indexInPlaylist,mode){
       toast('"'+t.displayTitle+'" could not play \u2014 file may be missing.');
       renderPlaylist();
     });
+  prefetchNext();
   updatePlayerUI(); renderPlaylist(); updateSatsangProgress();
+}
+/* Quietly buffer the next track so advancing to it is seamless. */
+function prefetchNext(){
+  try{
+    let nextUrl=null;
+    if(currentMode==='playlist'&&currentIndex>=0&&currentIndex<playlist.length-1)
+      nextUrl=playlist[currentIndex+1].url;
+    else if(currentMode==='library'&&libQueueIndex>=0&&libQueueIndex<libQueue.length-1)
+      nextUrl=libQueue[libQueueIndex+1].url;
+    if(!nextUrl) return;
+    _prefetch=new Audio();
+    _prefetch.preload='auto';
+    _prefetch.src=CONFIG.audioBase+encodeURI(nextUrl);
+  }catch(e){/* prefetch is best-effort */}
 }
 function playIndex(i){
   if(i<0||i>=playlist.length) return;
@@ -2119,9 +2137,9 @@ function pickOneShabad(){
   playTrackObject(t,-1,'single');
   toast('Pick One \u2014 '+t.displayTitle);
 }
-function setGapIndicator(on,secsLeft){
+function setGapIndicator(on){
   const el=document.getElementById('gapIndicator');
-  if(on){ el.classList.add('active'); el.textContent=`\u23f8 Gap \u2014 next in ${secsLeft}s`; }
+  if(on){ el.classList.add('active'); el.textContent='\u23f8 a brief pause\u2026'; }
   else { el.classList.remove('active'); el.innerHTML='&nbsp;'; }
 }
 /* SVG path data for play and pause glyphs, used to swap the footer
@@ -2260,17 +2278,15 @@ document.getElementById('prevBtn').onclick=()=>{
     libQueuePrev();
   }
 };
-audio.addEventListener('ended',()=>{
+function advanceAfterTrack(){
+  if(trackEnded) return;     // already advancing (early-cut and 'ended' can both fire)
+  trackEnded=true;
   if(currentMode==='playlist'&&currentIndex>=0&&currentIndex<playlist.length-1){
-    // Satsang playlist: pause for the fixed inter-track gap, then advance.
     if(CONFIG.gapSeconds>0){
-      let left=CONFIG.gapSeconds;
-      setGapIndicator(true,left);
-      gapTimer=setInterval(()=>{
-        left--;
-        if(left<=0){ clearInterval(gapTimer); playIndex(currentIndex+1); }
-        else setGapIndicator(true,left);
-      },1000);
+      audio.pause();              // a true, calm silence for the breathing space
+      setGapIndicator(true);
+      gapTimer=setTimeout(()=>{ setGapIndicator(false); playIndex(currentIndex+1); },
+                          CONFIG.gapSeconds*1000);
     }else playIndex(currentIndex+1);
   }else if(currentMode==='library'&&libQueueIndex>=0
            &&libQueueIndex<libQueue.length-1){
@@ -2279,9 +2295,11 @@ audio.addEventListener('ended',()=>{
   }else{
     // End of playlist, end of library queue, or a 'single' track:
     // nothing more to play. Pick One stops here by design.
+    audio.pause();
     updatePlayerUI(); renderPlaylist();
   }
-});
+}
+audio.addEventListener('ended',advanceAfterTrack);
 audio.addEventListener('timeupdate',()=>{
   if(seekDragging) return;   // don't fight the user's drag
   const c=audio.currentTime,d=audio.duration||0;
@@ -2289,6 +2307,11 @@ audio.addEventListener('timeupdate',()=>{
   document.getElementById('totTime').textContent=fmt(d);
   document.getElementById('seekFill').style.width=d?(c/d*100)+'%':'0%';
   updateSatsangProgress();
+  // Trailing-silence trim: the scanner records where each track's real
+  // audio ends (contentEndSeconds). Once we pass that point, move on
+  // immediately rather than playing out the silent tail.
+  const ce=nowPlaying&&nowPlaying.contentEndSeconds;
+  if(ce&&c>=ce) advanceAfterTrack();
 });
 audio.addEventListener('play',()=>updatePlayerUI());
 audio.addEventListener('pause',()=>updatePlayerUI());
