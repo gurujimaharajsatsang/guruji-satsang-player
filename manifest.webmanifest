@@ -1,0 +1,16 @@
+{
+  "name": "Guruji Ka Satsang Player",
+  "short_name": "Satsang",
+  "description": "Prepare and play Guruji's satsang shabads, online or downloaded for offline.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#241a1f",
+  "theme_color": "#c75c7a",
+  "icons": [
+    { "src": "preview.jpg", "sizes": "512x512", "type": "image/jpeg", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

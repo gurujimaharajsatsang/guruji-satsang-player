@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#c75c7a" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Satsang" />
+<link rel="apple-touch-icon" href="preview.jpg" />
 <title>Guruji Ka Satsang Player</title>
 
 <!-- ===== Link preview (WhatsApp / Facebook) ===== -->
@@ -1194,6 +1201,8 @@
               &#10022; Auto-Fill</button>
             <button class="pl-ctrl-ghost" id="clearList" title="Clear the playlist">
               Clear</button>
+            <button class="pl-ctrl-ghost" id="downloadSatsang" title="Save this satsang to play offline">
+              &#8615; Download</button>
             <div class="footer-satsang" id="footerSatsang">
               <span class="fs-label">Satsang</span>
               <div class="fs-track"><div class="fs-fill" id="fsFill"></div></div>
@@ -1826,6 +1835,7 @@ function renderPlaylist(){
   document.getElementById('plLength').textContent=fmt(totalSeconds());
   document.getElementById('playPauseAll').disabled=playlist.length===0;
   document.getElementById('restartAll').disabled=playlist.length===0;
+  updateDownloadButton();
   if(playlist.length===0){
     listEl.innerHTML=`<div class="empty">Playlist is empty.</div>`;
     return;
@@ -2479,6 +2489,106 @@ document.getElementById('autoFill').onclick=autoFill;
 document.getElementById('clearList').onclick=()=>{
   resetPlaylist(); renderLibrary(); toast('Playlist cleared');
 };
+
+/* ============================================================
+   Offline download (PWA)
+   Saves the current satsang's audio into the browser's cache so it
+   plays with no internet. The service worker (sw.js) serves it back.
+   ============================================================ */
+const AUDIO_CACHE='satsang-audio';
+let downloadBusy=false;
+
+function trackUrl(t){ return CONFIG.audioBase+encodeURI(t.url); }
+function offlineSupported(){ return ('serviceWorker' in navigator) && ('caches' in window); }
+
+/* How many of the current playlist's tracks are already saved offline. */
+async function countDownloaded(list){
+  if(!offlineSupported()||!list.length) return 0;
+  try{
+    const cache=await caches.open(AUDIO_CACHE);
+    let n=0;
+    for(const t of list){ if(await cache.match(trackUrl(t))) n++; }
+    return n;
+  }catch(e){ return 0; }
+}
+
+/* Reflect the saved/!saved state on the Download button. */
+async function updateDownloadButton(){
+  const btn=document.getElementById('downloadSatsang');
+  if(!btn) return;
+  if(!offlineSupported()){ btn.style.display='none'; return; }
+  if(downloadBusy) return;                       // mid-download label is managed elsewhere
+  const list=playlist.slice();
+  if(list.length===0){ btn.disabled=true; btn.innerHTML='&#8615; Download'; return; }
+  btn.disabled=false;
+  const have=await countDownloaded(list);
+  if(have>=list.length){ btn.innerHTML='&#10003; Saved offline'; btn.title='Tap to remove the offline copy'; btn.dataset.state='saved'; }
+  else if(have>0){ btn.innerHTML=`&#8615; Resume (${have}/${list.length})`; btn.title='Finish saving this satsang offline'; btn.dataset.state='partial'; }
+  else { btn.innerHTML='&#8615; Download'; btn.title='Save this satsang to play offline'; btn.dataset.state='none'; }
+}
+
+async function downloadCurrentSatsang(){
+  if(!offlineSupported()){ toast('Offline download is not supported on this browser.'); return; }
+  const list=playlist.slice();
+  if(list.length===0){ toast('Build a satsang first, then download.'); return; }
+  const btn=document.getElementById('downloadSatsang');
+  downloadBusy=true; btn.disabled=true;
+  let done=0,failed=0;
+  try{
+    const cache=await caches.open(AUDIO_CACHE);
+    for(const t of list){
+      const url=trackUrl(t);
+      btn.innerHTML=`Saving ${done+1}/${list.length}\u2026`;
+      try{
+        const already=await cache.match(url);
+        if(!already){
+          const r=await fetch(url,{mode:'cors'});
+          if(r&&r.ok) await cache.put(url,r.clone());
+          else failed++;
+        }
+      }catch(e){ failed++; }
+      done++;
+    }
+  }catch(e){ toast('Could not save offline \u2014 check the connection.'); }
+  downloadBusy=false;
+  await updateDownloadButton();
+  if(failed===0) toast('Satsang saved \u2014 it will play offline.');
+  else toast(`Saved with ${failed} track(s) skipped. Tap Resume to retry.`);
+}
+
+async function removeCurrentSatsang(){
+  const list=playlist.slice();
+  if(!offlineSupported()||list.length===0) return;
+  if(!confirm('Remove the offline copy of this satsang? It will stream online as usual.')) return;
+  try{
+    const cache=await caches.open(AUDIO_CACHE);
+    for(const t of list){ await cache.delete(trackUrl(t)); }
+    toast('Offline copy removed.');
+  }catch(e){}
+  await updateDownloadButton();
+}
+
+document.getElementById('downloadSatsang').onclick=()=>{
+  const st=document.getElementById('downloadSatsang').dataset.state;
+  if(st==='saved') removeCurrentSatsang();
+  else downloadCurrentSatsang();
+};
+
+/* Register the service worker. Wrapped so a failure never breaks the app. */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      reg.addEventListener('updatefound',()=>{
+        const nw=reg.installing;
+        if(nw) nw.addEventListener('statechange',()=>{
+          if(nw.state==='installed'&&navigator.serviceWorker.controller){
+            nw.postMessage&&nw.postMessage('skipWaiting');
+          }
+        });
+      });
+    }).catch(()=>{/* offline features simply stay off */});
+  });
+}
 /* Shabad Library header controls.
    Play  — starts the library queue, or pauses/resumes if already on it.
    Shuffle — a toggle; affects the order of any library queue built next,
