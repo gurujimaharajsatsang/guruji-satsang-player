@@ -1411,7 +1411,36 @@ let libQueue = [];              // ordered queue of tracks for 'library' mode
 let libQueueIndex = -1;         // position within libQueue
 let gapTimer = null;
 let trackEnded = false;   // guard so a track only advances once (early-cut OR 'ended')
+let inGap = false;        // true while the silent gap-clip is playing between tracks
 let _prefetch = null;     // warms the next track so the hand-off has no buffering pause
+
+/* Build a short silent WAV as a data URI (no network needed — works offline
+   too). Used to fill the inter-track gap WITHOUT ever calling audio.pause().
+   This matters on phones: once a page's <audio> is paused, iOS/Android treat
+   playback as stopped and are free to freeze the page's JS in the
+   background, so a setTimeout-based gap can simply never fire once the
+   screen locks. Keeping the <audio> element continuously playing — even
+   silence — keeps the OS's media session alive so the next track still
+   starts. */
+let _gapSilenceCache={};
+function gapSilenceUri(seconds){
+  const key=Math.max(0.2,seconds).toFixed(2);
+  if(_gapSilenceCache[key]) return _gapSilenceCache[key];
+  const sampleRate=8000, n=Math.round(parseFloat(key)*sampleRate), dataSize=n*2;
+  const buf=new ArrayBuffer(44+dataSize), v=new DataView(buf);
+  const str=(off,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(off+i,s.charCodeAt(i)); };
+  str(0,'RIFF'); v.setUint32(4,36+dataSize,true); str(8,'WAVE');
+  str(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+  v.setUint32(24,sampleRate,true); v.setUint32(28,sampleRate*2,true);
+  v.setUint16(32,2,true); v.setUint16(34,16,true);
+  str(36,'data'); v.setUint32(40,dataSize,true);   // remaining bytes are zero = silence
+  const bytes=new Uint8Array(buf);
+  let bin=''; const CH=0x8000;
+  for(let i=0;i<bytes.length;i+=CH) bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+CH));
+  const uri='data:audio/wav;base64,'+btoa(bin);
+  _gapSilenceCache[key]=uri;
+  return uri;
+}
 let recentlyUsed = [];
 let levelerOn = true;
 
@@ -2049,7 +2078,7 @@ function setupDrag(){
 /* ---------- Player ---------- */
 function playTrackObject(t,indexInPlaylist,mode){
   clearTimeout(gapTimer); clearInterval(gapTimer);
-  trackEnded=false;
+  trackEnded=false; inGap=false;
   setGapIndicator(false);
   ensureAudioGraph();
   if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
@@ -2212,6 +2241,7 @@ function updatePlayerUI(){
     setBigPlayIcon(false);
     if(swStatus) swStatus.textContent='Preparing for satsang';
     updateLibHeaderButton();
+    updateMediaSession(null,false);
     return;
   }
   document.getElementById('npTitle').textContent=t.displayTitle;
@@ -2232,7 +2262,7 @@ function updatePlayerUI(){
   }else{
     art.innerHTML='\u266a';
   }
-  const playing=!audio.paused;
+  const playing=!audio.paused&&!inGap;   // the gap plays silence, but should still *look* paused
   setFooterPlayIcon(playing);
   // The big round button shows pause only while playing the playlist.
   if(currentMode==='playlist'){
@@ -2251,6 +2281,42 @@ function updatePlayerUI(){
   }
   // Refresh list highlighting so the playing row shows everywhere.
   renderLibrary(); renderExtras();
+  updateMediaSession(t,playing);
+}
+/* Lock-screen / notification-shade media info and controls. Declaring a
+   Media Session is also what tells iOS/Android "this is real, actively
+   controlled media" — without it, phones are far more likely to freeze
+   the page (and stall the satsang) once the screen locks. */
+const mediaSessionReady=('mediaSession' in navigator);
+function updateMediaSession(t,playing){
+  if(!mediaSessionReady) return;
+  try{
+    if(!t){ navigator.mediaSession.metadata=null; navigator.mediaSession.playbackState='none'; return; }
+    const art=coverFor(t);
+    navigator.mediaSession.metadata=new MediaMetadata({
+      title: t.displayTitle||t.title||'Guruji Ka Satsang',
+      artist: t.artist||'Unknown',
+      album: 'Guruji Ka Satsang',
+      artwork: art?[{src:encodeURI(art),sizes:'512x512',type:'image/jpeg'}]:[]
+    });
+    navigator.mediaSession.playbackState=playing?'playing':'paused';
+  }catch(e){/* media session is a nice-to-have, never fatal */}
+}
+if(mediaSessionReady){
+  try{
+    navigator.mediaSession.setActionHandler('play',()=>{
+      if(!audio.src&&playlist.length){ playIndex(0); return; }
+      audio.play(); updatePlayerUI();
+    });
+    navigator.mediaSession.setActionHandler('pause',()=>{ audio.pause(); updatePlayerUI(); });
+    navigator.mediaSession.setActionHandler('previoustrack',()=>{
+      document.getElementById('prevBtn').click();
+    });
+    navigator.mediaSession.setActionHandler('nexttrack',()=>{
+      document.getElementById('nextBtn').click();
+    });
+    navigator.mediaSession.setActionHandler('stop',()=>{ audio.pause(); updatePlayerUI(); });
+  }catch(e){/* some actions are unsupported on some browsers — fine */}
 }
 
 document.getElementById('playPauseAll').onclick=()=>{
@@ -2292,12 +2358,8 @@ function advanceAfterTrack(){
   if(trackEnded) return;     // already advancing (early-cut and 'ended' can both fire)
   trackEnded=true;
   if(currentMode==='playlist'&&currentIndex>=0&&currentIndex<playlist.length-1){
-    if(CONFIG.gapSeconds>0){
-      audio.pause();              // a true, calm silence for the breathing space
-      setGapIndicator(true);
-      gapTimer=setTimeout(()=>{ setGapIndicator(false); playIndex(currentIndex+1); },
-                          CONFIG.gapSeconds*1000);
-    }else playIndex(currentIndex+1);
+    if(CONFIG.gapSeconds>0) playGapSilence();
+    else playIndex(currentIndex+1);
   }else if(currentMode==='library'&&libQueueIndex>=0
            &&libQueueIndex<libQueue.length-1){
     // Library queue: advance straight to the next shabad, no gap.
@@ -2309,8 +2371,26 @@ function advanceAfterTrack(){
     updatePlayerUI(); renderPlaylist();
   }
 }
-audio.addEventListener('ended',advanceAfterTrack);
+/* The breathing-space pause between tracks. Plays a short silent clip
+   rather than calling audio.pause() + a JS timer, so the browser never
+   sees playback as "stopped" and the phone won't freeze the page's
+   scripts once the screen locks. The native 'ended' event (not a timer)
+   is what moves on to the next track — that event is guaranteed to fire
+   even in the background, which a setTimeout is not. */
+function playGapSilence(){
+  inGap=true;
+  setGapIndicator(true);
+  try{
+    audio.src=gapSilenceUri(CONFIG.gapSeconds);
+    audio.play().catch(()=>{ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); });
+  }catch(e){ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); }
+}
+audio.addEventListener('ended',()=>{
+  if(inGap){ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); return; }
+  advanceAfterTrack();
+});
 audio.addEventListener('timeupdate',()=>{
+  if(inGap) return;          // ignore the silent clip's own tiny timeline
   if(seekDragging) return;   // don't fight the user's drag
   const c=audio.currentTime,d=audio.duration||0;
   document.getElementById('curTime').textContent=fmt(c);
