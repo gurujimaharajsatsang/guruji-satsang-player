@@ -2087,14 +2087,35 @@ function playTrackObject(t,indexInPlaylist,mode){
   currentIndex=(typeof indexInPlaylist==='number')?indexInPlaylist:-1;
   nowPlaying=t;                       // remember the track, whatever the mode
   audio.src=CONFIG.audioBase+encodeURI(t.url);
-  audio.play().then(()=>{ t._missing=false; })
-    .catch(()=>{
-      t._missing=true;
-      toast('"'+t.displayTitle+'" could not play \u2014 file may be missing.');
-      renderPlaylist();
-    });
+  attemptPlay(t,3);
   prefetchNext();
   updatePlayerUI(); renderPlaylist(); updateSatsangProgress();
+}
+/* audio.play() can reject for reasons that have nothing to do with the
+   file actually being missing — most commonly the phone briefly
+   throttling playback right as the screen locks/wakes, or the OS
+   momentarily suspending the audio session during a track hand-off.
+   Treating the very first rejection as "file missing" (the old
+   behaviour) meant one transient hiccup could kill the whole satsang.
+   Now we retry a few times with a short pause first, and only label a
+   track missing — and skip past it — if it still won't play after
+   those retries. */
+function attemptPlay(t,retriesLeft){
+  // If the user has since moved on to a different track, abandon this attempt.
+  if(nowPlaying!==t) return;
+  audio.play().then(()=>{ t._missing=false; })
+    .catch(()=>{
+      if(nowPlaying!==t) return;
+      if(retriesLeft>0){
+        setTimeout(()=>attemptPlay(t,retriesLeft-1),500);
+      }else{
+        t._missing=true;
+        toast('"'+t.displayTitle+'" could not play \u2014 skipping.');
+        renderPlaylist();
+        // Don't let one bad track stop the whole satsang — move on.
+        setTimeout(()=>{ if(nowPlaying===t) advanceAfterTrack(); },900);
+      }
+    });
 }
 /* Quietly buffer the next track so advancing to it is seamless. */
 function prefetchNext(){
@@ -2380,10 +2401,24 @@ function advanceAfterTrack(){
 function playGapSilence(){
   inGap=true;
   setGapIndicator(true);
+  attemptGapPlay(3);
+}
+/* Same rationale as attemptPlay: a rejected play() on the silent gap
+   clip is almost always transient background throttling, not a real
+   problem. Retry a couple of times before giving up and jumping
+   straight to the next track (skipping just the gap, not the track). */
+function attemptGapPlay(retriesLeft){
   try{
     audio.src=gapSilenceUri(CONFIG.gapSeconds);
-    audio.play().catch(()=>{ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); });
-  }catch(e){ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); }
+    audio.play().catch(()=>{
+      if(!inGap) return;
+      if(retriesLeft>0) setTimeout(()=>attemptGapPlay(retriesLeft-1),400);
+      else{ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); }
+    });
+  }catch(e){
+    if(retriesLeft>0) setTimeout(()=>attemptGapPlay(retriesLeft-1),400);
+    else{ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); }
+  }
 }
 audio.addEventListener('ended',()=>{
   if(inGap){ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); return; }
@@ -2406,8 +2441,12 @@ audio.addEventListener('timeupdate',()=>{
 audio.addEventListener('play',()=>updatePlayerUI());
 audio.addEventListener('pause',()=>updatePlayerUI());
 audio.addEventListener('error',()=>{
+  if(inGap) return;   // a broken gap-clip data URI is handled by attemptGapPlay, not this
   if(currentMode==='playlist'&&currentIndex>=0&&playlist[currentIndex]){
     playlist[currentIndex]._missing=true; renderPlaylist();
+    // A genuine decode/network error means this track will never fire
+    // 'ended' — without this, the satsang would just sit here forever.
+    setTimeout(()=>{ if(!trackEnded) advanceAfterTrack(); },900);
   }
 });
 
