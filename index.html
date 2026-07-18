@@ -2092,19 +2092,30 @@ function setupDrag(){
 }
 
 /* ---------- Player ---------- */
+/* Bumped on every deliberate transition (new track, new gap). Any
+   setTimeout-based retry below captures the token that was current when
+   IT was scheduled; if that token is stale by the time the timeout
+   finally fires (which can be delayed by a long, unpredictable amount
+   while the screen is off — sometimes the OS holds a timer for minutes),
+   the callback bails out instead of acting. Without this, a late retry
+   left over from a track/gap boundary that has already been superseded
+   by a more direct path can fire a SECOND advance and skip a track. */
+let playToken = 0;
+
 function playTrackObject(t,indexInPlaylist,mode){
   clearTimeout(gapTimer); clearInterval(gapTimer);
   trackEnded=false; inGap=false;
   userPaused=false;   // starting a track is always an intent to keep playing
+  const myToken=++playToken;
   setGapIndicator(false);
   ensureAudioGraph();
-  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
+  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
   applyGainFor(t);
   currentMode=mode||'single';
   currentIndex=(typeof indexInPlaylist==='number')?indexInPlaylist:-1;
   nowPlaying=t;                       // remember the track, whatever the mode
   audio.src=CONFIG.audioBase+encodeURI(t.url);
-  attemptPlay(t,6);
+  attemptPlay(t,6,myToken);
   prefetchNext();
   updatePlayerUI(); renderPlaylist(); updateSatsangProgress();
 }
@@ -2117,21 +2128,23 @@ function playTrackObject(t,indexInPlaylist,mode){
    Now we retry a few times with a short pause first, and only label a
    track missing — and skip past it — if it still won't play after
    those retries. */
-function attemptPlay(t,retriesLeft){
+function attemptPlay(t,retriesLeft,token){
   // If the user has since moved on to a different track, or deliberately
-  // paused, abandon this attempt — don't fight their intent.
-  if(nowPlaying!==t||userPaused) return;
+  // paused, or a newer transition has already superseded this one,
+  // abandon this attempt — don't fight the current state.
+  if(nowPlaying!==t||userPaused||token!==playToken) return;
   t._pendingResume=false;
+  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
   audio.play().then(()=>{ t._missing=false; t._pendingResume=false; })
     .catch(()=>{
-      if(nowPlaying!==t||userPaused) return;
+      if(nowPlaying!==t||userPaused||token!==playToken) return;
       if(retriesLeft>0){
         // A rejected play() while the screen is off/locked is almost
         // always transient background throttling, not a missing file —
         // give it noticeably more breathing room in that case rather
         // than burning through retries in under two seconds.
         const delay=document.hidden?1500:500;
-        setTimeout(()=>attemptPlay(t,retriesLeft-1),delay);
+        setTimeout(()=>attemptPlay(t,retriesLeft-1,token),delay);
       }else if(document.hidden){
         // Don't condemn the track just because we're backgrounded.
         // Wait for the screen to come back on (see visibilitychange
@@ -2142,7 +2155,7 @@ function attemptPlay(t,retriesLeft){
         toast('"'+t.displayTitle+'" could not play \u2014 skipping.');
         renderPlaylist();
         // Don't let one bad track stop the whole satsang — move on.
-        setTimeout(()=>{ if(nowPlaying===t) advanceAfterTrack(); },900);
+        setTimeout(()=>{ if(nowPlaying===t&&token===playToken) advanceAfterTrack(); },900);
       }
     });
 }
@@ -2428,28 +2441,34 @@ function advanceAfterTrack(){
    even in the background, which a setTimeout is not. */
 function playGapSilence(){
   inGap=true;
+  const myToken=++playToken;
   setGapIndicator(true);
-  attemptGapPlay(6);
+  try{ audio.src=gapSilenceUri(CONFIG.gapSeconds); }catch(e){}
+  attemptGapPlay(6,myToken);
 }
 /* Same rationale as attemptPlay: a rejected play() on the silent gap
    clip is almost always transient background throttling, not a real
    problem. Retry several times — waiting longer between attempts while
    the screen is off, since that's exactly when a phone is most likely
    to briefly stall a play() call — before giving up and jumping
-   straight to the next track (skipping just the gap, not the track). */
-function attemptGapPlay(retriesLeft){
+   straight to the next track (skipping just the gap, not the track).
+   `token` ties every retry to THIS specific gap: if the world has moved
+   on (a newer track/gap has started) by the time a delayed retry finally
+   runs, it bails out instead of firing an extra, duplicate advance. */
+function attemptGapPlay(retriesLeft,token){
+  if(token!==playToken||!inGap) return;
+  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
   try{
-    audio.src=gapSilenceUri(CONFIG.gapSeconds);
     audio.play().catch(()=>{
-      if(!inGap) return;
+      if(token!==playToken||!inGap) return;
       if(retriesLeft>0){
         const delay=document.hidden?1200:400;
-        setTimeout(()=>attemptGapPlay(retriesLeft-1),delay);
+        setTimeout(()=>attemptGapPlay(retriesLeft-1,token),delay);
       }
       else{ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); }
     });
   }catch(e){
-    if(retriesLeft>0) setTimeout(()=>attemptGapPlay(retriesLeft-1),400);
+    if(retriesLeft>0) setTimeout(()=>attemptGapPlay(retriesLeft-1,token),400);
     else{ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); }
   }
 }
@@ -2492,18 +2511,25 @@ audio.addEventListener('error',()=>{
    check whether we're silently stuck — expected to be playing, but
    not — and recover instead of leaving the satsang stalled or letting
    a track get wrongly marked "missing". */
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState!=='visible') return;
+function recoverFromBackground(){
   if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
   if(userPaused||!nowPlaying) return;
   if(nowPlaying._pendingResume){
-    attemptPlay(nowPlaying,6);
+    attemptPlay(nowPlaying,6,playToken);
     return;
   }
   if(!inGap&&audio.paused){
-    attemptPlay(nowPlaying,6);
+    attemptPlay(nowPlaying,6,playToken);
   }
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible') recoverFromBackground();
 });
+// visibilitychange doesn't always fire reliably on every mobile browser/
+// homescreen-PWA combination — 'pageshow' and 'focus' are cheap, safe
+// extra chances to catch the same wake-up moment.
+window.addEventListener('pageshow',recoverFromBackground);
+window.addEventListener('focus',recoverFromBackground);
 /* A lightweight periodic safety net for the rare case where nothing
    else caught a stall (e.g. the 'ended'/'timeupdate' events themselves
    got dropped while backgrounded). Only acts while the page is visible,
@@ -2512,7 +2538,7 @@ document.addEventListener('visibilitychange',()=>{
 setInterval(()=>{
   if(document.hidden) return;
   if(userPaused||!nowPlaying||inGap) return;
-  if(audio.paused) attemptPlay(nowPlaying,3);
+  if(audio.paused) attemptPlay(nowPlaying,3,playToken);
 },5000);
 
 /* ---------- Seek bar — click and drag ---------- */
