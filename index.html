@@ -1443,24 +1443,8 @@ function gapSilenceUri(seconds){
 }
 let recentlyUsed = [];
 let levelerOn = true;
-/* True only when the listener deliberately paused playback (pressed
-   pause, or the whole satsang/queue naturally finished). False any time
-   we expect audio to be playing. This lets the background-recovery
-   code below tell "the person wants silence" apart from "the phone
-   stalled playback while the screen was off/locked", which it must
-   NOT treat the same way. */
-let userPaused = false;
 
 const audio = document.getElementById('audio');
-/* Every place in the UI that toggles play/pause on the CURRENT track
-   (footer button, big playlist button, tapping the row that's already
-   playing, the lock-screen controls) should go through here, so
-   `userPaused` always reflects what the listener actually asked for. */
-function toggleAudioPlayPause(){
-  if(audio.paused){ userPaused=false; audio.play().catch(()=>{}); }
-  else{ userPaused=true; audio.pause(); }
-  updatePlayerUI();
-}
 
 /* ---------- Auto Volume + master volume (Web Audio) ---------- */
 /* Chain: source -> levelerGain -> compressor -> masterVolume -> output
@@ -2092,30 +2076,21 @@ function setupDrag(){
 }
 
 /* ---------- Player ---------- */
-/* Bumped on every deliberate transition (new track, new gap). Any
-   setTimeout-based retry below captures the token that was current when
-   IT was scheduled; if that token is stale by the time the timeout
-   finally fires (which can be delayed by a long, unpredictable amount
-   while the screen is off — sometimes the OS holds a timer for minutes),
-   the callback bails out instead of acting. Without this, a late retry
-   left over from a track/gap boundary that has already been superseded
-   by a more direct path can fire a SECOND advance and skip a track. */
-let playToken = 0;
-
 function playTrackObject(t,indexInPlaylist,mode){
   clearTimeout(gapTimer); clearInterval(gapTimer);
   trackEnded=false; inGap=false;
-  userPaused=false;   // starting a track is always an intent to keep playing
-  const myToken=++playToken;
   setGapIndicator(false);
   ensureAudioGraph();
-  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
+  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
   applyGainFor(t);
   currentMode=mode||'single';
   currentIndex=(typeof indexInPlaylist==='number')?indexInPlaylist:-1;
   nowPlaying=t;                       // remember the track, whatever the mode
-  audio.src=CONFIG.audioBase+encodeURI(t.url);
-  attemptPlay(t,6,myToken);
+  if(_activeBlobUrl){ URL.revokeObjectURL(_activeBlobUrl); _activeBlobUrl=null; }
+  const srcUrl=resolvePlayUrl(t);
+  if(srcUrl.indexOf('blob:')===0) _activeBlobUrl=srcUrl;
+  audio.src=srcUrl;
+  attemptPlay(t,3);
   prefetchNext();
   updatePlayerUI(); renderPlaylist(); updateSatsangProgress();
 }
@@ -2128,38 +2103,35 @@ function playTrackObject(t,indexInPlaylist,mode){
    Now we retry a few times with a short pause first, and only label a
    track missing — and skip past it — if it still won't play after
    those retries. */
-function attemptPlay(t,retriesLeft,token){
-  // If the user has since moved on to a different track, or deliberately
-  // paused, or a newer transition has already superseded this one,
-  // abandon this attempt — don't fight the current state.
-  if(nowPlaying!==t||userPaused||token!==playToken) return;
-  t._pendingResume=false;
-  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
-  audio.play().then(()=>{ t._missing=false; t._pendingResume=false; })
+function attemptPlay(t,retriesLeft){
+  // If the user has since moved on to a different track, abandon this attempt.
+  if(nowPlaying!==t) return;
+  audio.play().then(()=>{ t._missing=false; })
     .catch(()=>{
-      if(nowPlaying!==t||userPaused||token!==playToken) return;
+      if(nowPlaying!==t) return;
       if(retriesLeft>0){
-        // A rejected play() while the screen is off/locked is almost
-        // always transient background throttling, not a missing file —
-        // give it noticeably more breathing room in that case rather
-        // than burning through retries in under two seconds.
-        const delay=document.hidden?1500:500;
-        setTimeout(()=>attemptPlay(t,retriesLeft-1,token),delay);
-      }else if(document.hidden){
-        // Don't condemn the track just because we're backgrounded.
-        // Wait for the screen to come back on (see visibilitychange
-        // handler below) and try again with a fresh set of retries.
-        t._pendingResume=true;
+        setTimeout(()=>attemptPlay(t,retriesLeft-1),500);
       }else{
         t._missing=true;
         toast('"'+t.displayTitle+'" could not play \u2014 skipping.');
         renderPlaylist();
         // Don't let one bad track stop the whole satsang — move on.
-        setTimeout(()=>{ if(nowPlaying===t&&token===playToken) advanceAfterTrack(); },900);
+        setTimeout(()=>{ if(nowPlaying===t) advanceAfterTrack(); },900);
       }
     });
 }
-/* Quietly buffer the next track so advancing to it is seamless. */
+/* Fully download the upcoming track's bytes into memory *now*, while the
+   page still has real execution/network rights (right as the current
+   track starts playing). The old version only warmed the browser's HTTP
+   cache via a throwaway Audio() element, which offered no guarantee once
+   the screen locked. Phones aggressively throttle or outright block
+   background network fetches — that throttling, not a missing file, is
+   what was showing "file missing" and stalling auto-advance. Starting the
+   download minutes ahead (instead of at the exact moment of hand-off)
+   gives it far more time to finish before it's actually needed, and
+   swapping to a local Blob URL means the critical hand-off itself needs
+   zero network activity, no matter how throttled the tab is right then. */
+let _nextBlobUrl=null, _nextBlobForUrl=null, _activeBlobUrl=null;
 function prefetchNext(){
   try{
     let nextUrl=null;
@@ -2168,10 +2140,33 @@ function prefetchNext(){
     else if(currentMode==='library'&&libQueueIndex>=0&&libQueueIndex<libQueue.length-1)
       nextUrl=libQueue[libQueueIndex+1].url;
     if(!nextUrl) return;
-    _prefetch=new Audio();
-    _prefetch.preload='auto';
-    _prefetch.src=CONFIG.audioBase+encodeURI(nextUrl);
+    const fullUrl=CONFIG.audioBase+encodeURI(nextUrl);
+    if(_nextBlobForUrl===fullUrl) return;   // already fetched, or a fetch is already in flight
+    _nextBlobForUrl=fullUrl;
+    if(_nextBlobUrl){ URL.revokeObjectURL(_nextBlobUrl); _nextBlobUrl=null; }
+    fetch(fullUrl,{mode:'cors'})
+      .then(r=>{ if(!r||!r.ok) throw new Error('bad response'); return r.blob(); })
+      .then(blob=>{
+        if(_nextBlobForUrl!==fullUrl) return;   // superseded by a newer prefetch meanwhile
+        _nextBlobUrl=URL.createObjectURL(blob);
+      })
+      .catch(()=>{ if(_nextBlobForUrl===fullUrl) _nextBlobForUrl=null; });
+    // Also keep the old lightweight warm-up as a harmless extra signal to the browser.
+    _prefetch=new Audio(); _prefetch.preload='auto'; _prefetch.src=fullUrl;
   }catch(e){/* prefetch is best-effort */}
+}
+/* Which URL to actually load for a track: the pre-downloaded local Blob
+   if it's ready (instant, no network needed), otherwise the remote URL
+   as a fallback (e.g. the very first track, or a manual skip that jumped
+   past what was prefetched). */
+function resolvePlayUrl(t){
+  const fullUrl=CONFIG.audioBase+encodeURI(t.url);
+  if(_nextBlobForUrl===fullUrl&&_nextBlobUrl){
+    const b=_nextBlobUrl;
+    _nextBlobUrl=null; _nextBlobForUrl=null;   // handing it off to become the active src
+    return b;
+  }
+  return fullUrl;
 }
 function playIndex(i){
   if(i<0||i>=playlist.length) return;
@@ -2368,34 +2363,36 @@ function updateMediaSession(t,playing){
 if(mediaSessionReady){
   try{
     navigator.mediaSession.setActionHandler('play',()=>{
-      if(!audio.src&&playlist.length){ userPaused=false; playIndex(0); return; }
-      userPaused=false; audio.play().catch(()=>{}); updatePlayerUI();
+      if(!audio.src&&playlist.length){ playIndex(0); return; }
+      audio.play(); updatePlayerUI();
     });
-    navigator.mediaSession.setActionHandler('pause',()=>{ userPaused=true; audio.pause(); updatePlayerUI(); });
+    navigator.mediaSession.setActionHandler('pause',()=>{ audio.pause(); updatePlayerUI(); });
     navigator.mediaSession.setActionHandler('previoustrack',()=>{
       document.getElementById('prevBtn').click();
     });
     navigator.mediaSession.setActionHandler('nexttrack',()=>{
       document.getElementById('nextBtn').click();
     });
-    navigator.mediaSession.setActionHandler('stop',()=>{ userPaused=true; audio.pause(); updatePlayerUI(); });
+    navigator.mediaSession.setActionHandler('stop',()=>{ audio.pause(); updatePlayerUI(); });
   }catch(e){/* some actions are unsupported on some browsers — fine */}
 }
 
 document.getElementById('playPauseAll').onclick=()=>{
   if(playlist.length===0) return;
   if(currentMode==='playlist'&&currentIndex>=0){
-    toggleAudioPlayPause();
+    if(audio.paused) audio.play(); else audio.pause();
   }else{
     playIndex(0);   // start the satsang from the top
   }
+  updatePlayerUI();
 };
 document.getElementById('restartAll').onclick=()=>{
   if(playlist.length) playIndex(0);
 };
 document.getElementById('playBtn').onclick=()=>{
   if(!audio.src&&playlist.length){ playIndex(0); return; }
-  toggleAudioPlayPause();
+  if(audio.paused) audio.play(); else audio.pause();
+  updatePlayerUI();
 };
 document.getElementById('nextBtn').onclick=()=>{
   // Next steps through whichever queue is currently playing.
@@ -2428,7 +2425,6 @@ function advanceAfterTrack(){
   }else{
     // End of playlist, end of library queue, or a 'single' track:
     // nothing more to play. Pick One stops here by design.
-    userPaused=true;
     audio.pause();
     updatePlayerUI(); renderPlaylist();
   }
@@ -2441,34 +2437,23 @@ function advanceAfterTrack(){
    even in the background, which a setTimeout is not. */
 function playGapSilence(){
   inGap=true;
-  const myToken=++playToken;
   setGapIndicator(true);
-  try{ audio.src=gapSilenceUri(CONFIG.gapSeconds); }catch(e){}
-  attemptGapPlay(6,myToken);
+  attemptGapPlay(3);
 }
 /* Same rationale as attemptPlay: a rejected play() on the silent gap
    clip is almost always transient background throttling, not a real
-   problem. Retry several times — waiting longer between attempts while
-   the screen is off, since that's exactly when a phone is most likely
-   to briefly stall a play() call — before giving up and jumping
-   straight to the next track (skipping just the gap, not the track).
-   `token` ties every retry to THIS specific gap: if the world has moved
-   on (a newer track/gap has started) by the time a delayed retry finally
-   runs, it bails out instead of firing an extra, duplicate advance. */
-function attemptGapPlay(retriesLeft,token){
-  if(token!==playToken||!inGap) return;
-  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
+   problem. Retry a couple of times before giving up and jumping
+   straight to the next track (skipping just the gap, not the track). */
+function attemptGapPlay(retriesLeft){
   try{
+    audio.src=gapSilenceUri(CONFIG.gapSeconds);
     audio.play().catch(()=>{
-      if(token!==playToken||!inGap) return;
-      if(retriesLeft>0){
-        const delay=document.hidden?1200:400;
-        setTimeout(()=>attemptGapPlay(retriesLeft-1,token),delay);
-      }
+      if(!inGap) return;
+      if(retriesLeft>0) setTimeout(()=>attemptGapPlay(retriesLeft-1),400);
       else{ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); }
     });
   }catch(e){
-    if(retriesLeft>0) setTimeout(()=>attemptGapPlay(retriesLeft-1,token),400);
+    if(retriesLeft>0) setTimeout(()=>attemptGapPlay(retriesLeft-1),400);
     else{ inGap=false; setGapIndicator(false); playIndex(currentIndex+1); }
   }
 }
@@ -2501,45 +2486,6 @@ audio.addEventListener('error',()=>{
     setTimeout(()=>{ if(!trackEnded) advanceAfterTrack(); },900);
   }
 });
-
-/* ---------- Background / screen-off recovery ----------
-   Phones routinely stall a page's audio for a moment right as the
-   screen locks or wakes (suspending the Web Audio graph, briefly
-   rejecting a play() call, delaying a setTimeout). The retry logic
-   above already rides out most of that, but as a last line of
-   defence: whenever the screen/tab comes back to the foreground,
-   check whether we're silently stuck — expected to be playing, but
-   not — and recover instead of leaving the satsang stalled or letting
-   a track get wrongly marked "missing". */
-function recoverFromBackground(){
-  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
-  if(userPaused||!nowPlaying) return;
-  if(nowPlaying._pendingResume){
-    attemptPlay(nowPlaying,6,playToken);
-    return;
-  }
-  if(!inGap&&audio.paused){
-    attemptPlay(nowPlaying,6,playToken);
-  }
-}
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible') recoverFromBackground();
-});
-// visibilitychange doesn't always fire reliably on every mobile browser/
-// homescreen-PWA combination — 'pageshow' and 'focus' are cheap, safe
-// extra chances to catch the same wake-up moment.
-window.addEventListener('pageshow',recoverFromBackground);
-window.addEventListener('focus',recoverFromBackground);
-/* A lightweight periodic safety net for the rare case where nothing
-   else caught a stall (e.g. the 'ended'/'timeupdate' events themselves
-   got dropped while backgrounded). Only acts while the page is visible,
-   so it never fights the background throttling the retry logic above
-   is already designed around. */
-setInterval(()=>{
-  if(document.hidden) return;
-  if(userPaused||!nowPlaying||inGap) return;
-  if(audio.paused) attemptPlay(nowPlaying,3,playToken);
-},5000);
 
 /* ---------- Seek bar — click and drag ---------- */
 let seekDragging=false;
@@ -2656,7 +2602,8 @@ document.getElementById('libraryList').addEventListener('click',e=>{
   if(row&&row.dataset.id){
     const id=parseInt(row.dataset.id);
     if(nowPlaying&&nowPlaying.id===id){
-      toggleAudioPlayPause(); return;
+      if(audio.paused) audio.play(); else audio.pause();
+      updatePlayerUI(); return;
     }
     // Start the library queue from this track, so the footer
     // Next/Prev buttons step through the library from here.
@@ -2668,7 +2615,8 @@ document.getElementById('extrasList').addEventListener('click',e=>{
   if(row&&row.dataset.extra){
     const id=parseInt(row.dataset.extra);
     if(nowPlaying&&nowPlaying.id===id){
-      toggleAudioPlayPause(); return;
+      if(audio.paused) audio.play(); else audio.pause();
+      updatePlayerUI(); return;
     }
     playSingle(EXTRAS.find(x=>x.id===id));
   }
@@ -2687,14 +2635,23 @@ document.getElementById('playlistList').addEventListener('click',e=>{
     const idx=parseInt(row.dataset.index);
     const t=playlist[idx];
     if(t&&nowPlaying&&nowPlaying.id===t.id&&currentMode==='playlist'){
-      toggleAudioPlayPause(); return;
+      if(audio.paused) audio.play(); else audio.pause();
+      updatePlayerUI(); return;
     }
     playIndex(idx);
   }
 });
 document.getElementById('autoFill').onclick=autoFill;
-document.getElementById('clearList').onclick=()=>{
+document.getElementById('clearList').onclick=async ()=>{
+  const list=playlist.slice();   // capture before resetting, so we can drop its offline copy too
   resetPlaylist(); renderLibrary(); toast('Playlist cleared');
+  if(offlineSupported()&&list.length){
+    try{
+      const cache=await caches.open(AUDIO_CACHE);
+      for(const t of list) await cache.delete(trackUrl(t));
+    }catch(e){/* offline cleanup is best-effort — clearing the list itself still worked */}
+  }
+  await updateDownloadButton();
 };
 
 /* ============================================================
@@ -2804,7 +2761,8 @@ if('serviceWorker' in navigator){
 document.getElementById('libPlay').onclick=()=>{
   if(currentMode==='library'&&libQueueIndex>=0){
     // Already playing the library — this button is a play/pause toggle.
-    toggleAudioPlayPause();
+    if(audio.paused) audio.play(); else audio.pause();
+    updatePlayerUI();
   }else{
     playLibraryAll();
   }
